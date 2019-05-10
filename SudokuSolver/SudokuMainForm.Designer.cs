@@ -48,7 +48,6 @@
             this.statusStrip1.Size = new System.Drawing.Size(917, 22);
             this.statusStrip1.TabIndex = 0;
             this.statusStrip1.Text = "statusStrip1";
-            this.statusStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.statusStrip1_ItemClicked);
             // 
             // splitContainer1
             // 
@@ -62,13 +61,11 @@
             this.splitContainer1.Panel1.Controls.Add(this.button3);
             this.splitContainer1.Panel1.Controls.Add(this.button2);
             this.splitContainer1.Panel1.Controls.Add(this.button1);
-            this.splitContainer1.Panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel1_Paint);
             this.splitContainer1.Panel1MinSize = 200;
             // 
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.tableLayoutPanel1);
-            this.splitContainer1.Panel2.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel2_Paint);
             this.splitContainer1.Size = new System.Drawing.Size(917, 676);
             this.splitContainer1.SplitterDistance = 213;
             this.splitContainer1.TabIndex = 2;
@@ -150,7 +147,6 @@
             this.Controls.Add(this.statusStrip1);
             this.Name = "SudokuMainForm";
             this.Text = "Sudoku solver";
-            this.Load += new System.EventHandler(this.SudokuMainForm_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();

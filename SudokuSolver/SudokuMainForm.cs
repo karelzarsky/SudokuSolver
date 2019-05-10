@@ -22,14 +22,14 @@ namespace SudokuSolver
         private void PrepareBoard()
         {
             Random rnd = new Random();
-
+            tableLayoutPanel1.Font = new Font("Courier New", 16, FontStyle.Bold, GraphicsUnit.Point, 0);
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
                 {
                     var color = (i / 3 + j / 3) % 2 == 0
                         ? Color.DarkGray
                         : Color.BurlyWood;
-                    var panel = new Panel
+                    var panel = new Panel // for vertical allignment
                     {
                         BackColor = color,
                         Dock = DockStyle.Fill,
@@ -41,32 +41,11 @@ namespace SudokuSolver
                             BackColor = color,
                             Text = (1 + rnd.Next(9)).ToString(),
                             BorderStyle = BorderStyle.None,
-                            Font = new Font("Courier New", 20, FontStyle.Bold, GraphicsUnit.Point, 0),
                             TextAlign = ContentAlignment.MiddleCenter
                         }
                     );
                     tableLayoutPanel1.Controls.Add(panel, i, j );
                 }
-        }
-
-        private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void SudokuMainForm_Load(object sender, EventArgs e)
-        {
-
-        }
-
-        private void statusStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
-        {
-
-        }
-
-        private void splitContainer1_Panel2_Paint(object sender, PaintEventArgs e)
-        {
-
         }
     }
 }
