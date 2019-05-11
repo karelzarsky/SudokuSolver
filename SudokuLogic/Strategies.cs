@@ -58,6 +58,7 @@ namespace SudokuLogic
                     {
                         b.solution[i,j] = (byte)Enumerable.Range(1, 9).First(number => b.possibilities[i, j, number]);
                         solvedCounter++;
+                        BasicPossibilitiesReduction(b);
                     }
                 }
             return solvedCounter;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using static SudokuLogic.SimpleFunctions;
 
 namespace SudokuLogic
@@ -12,7 +13,7 @@ namespace SudokuLogic
     {
         public byte[,] submission = new byte[9, 9]; // Number 0 means empty
         public byte[,] solution = new byte[9, 9];
-        public bool[,,] possibilities = new bool[9, 9, 9]; // False means coordinates I, J cannot be filled with number K
+        public bool[,,] possibilities = new bool[9, 9, 10]; // False means coordinates I, J cannot be filled with number K
 
         public Board()
         {
@@ -54,7 +55,7 @@ namespace SudokuLogic
         {
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
-                    for (int k = 0; k < 9; k++)
+                    for (int k = 0; k < 10; k++)
                         possibilities[i, j, k] = true;
         }
 
@@ -80,6 +81,34 @@ namespace SudokuLogic
                     solution[x, y] = 0;
                 }
             }
+        }
+
+        public override string ToString()
+        {
+            var sb = new StringBuilder();
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    sb.Append(solution[i, j].ToString());
+                }
+            }
+            return sb.ToString();
+        }
+
+        public void FillFromString(string content)
+        {
+            if (content.Length < 81) return;
+            int characterCounter = 0;
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    byte.TryParse(content[characterCounter++].ToString(), out byte number);
+                    solution[i, j] = number;
+                }
+            }
+            FillAllPossibilitiesTrue();
         }
     }
 }

@@ -150,15 +150,7 @@ namespace SudokuSolver
             {
                 if (fileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    var sb = new StringBuilder();
-                    for (int i = 0; i < 9; i++)
-                    {
-                        for (int j = 0; j < 9; j++)
-                        {
-                            sb.Append(board.solution[i, j].ToString());
-                        }
-                    }
-                    File.WriteAllText(fileDialog.FileName, sb.ToString());
+                    File.WriteAllText(fileDialog.FileName, board.ToString());
                 }
             }
         }
@@ -181,19 +173,17 @@ namespace SudokuSolver
                             fileContent = reader.ReadToEnd();
                         }
                     }
-                    if (fileContent.Length < 81) return;
-                    int characterCounter = 0;
-                    for (int i = 0; i < 9; i++)
-                    {
-                        for (int j = 0; j < 9; j++)
-                        {
-                            byte.TryParse(fileContent[characterCounter++].ToString(), out byte number);
-                            board.solution[i, j] = number;
-                        }
-                    }
+                    board.FillFromString(fileContent);
                     RefreshBoard();
                 }
             }
+        }
+
+        private void OneStepBtn_Click(object sender, EventArgs e)
+        {
+            Strategies.BasicPossibilitiesReduction(board);
+            Strategies.CheckForSolvedCells(board);
+            RefreshBoard();
         }
     }
 }
