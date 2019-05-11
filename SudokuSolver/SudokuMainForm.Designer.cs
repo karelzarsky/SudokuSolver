@@ -30,10 +30,10 @@
         {
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.LoadBtn = new System.Windows.Forms.Button();
+            this.SaveBtn = new System.Windows.Forms.Button();
+            this.FillRandomBtn = new System.Windows.Forms.Button();
+            this.ClearBtn = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
@@ -58,10 +58,10 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.button4);
-            this.splitContainer1.Panel1.Controls.Add(this.button3);
-            this.splitContainer1.Panel1.Controls.Add(this.button2);
-            this.splitContainer1.Panel1.Controls.Add(this.button1);
+            this.splitContainer1.Panel1.Controls.Add(this.LoadBtn);
+            this.splitContainer1.Panel1.Controls.Add(this.SaveBtn);
+            this.splitContainer1.Panel1.Controls.Add(this.FillRandomBtn);
+            this.splitContainer1.Panel1.Controls.Add(this.ClearBtn);
             this.splitContainer1.Panel1MinSize = 200;
             // 
             // splitContainer1.Panel2
@@ -71,42 +71,45 @@
             this.splitContainer1.SplitterDistance = 213;
             this.splitContainer1.TabIndex = 2;
             // 
-            // button4
+            // LoadBtn
             // 
-            this.button4.Location = new System.Drawing.Point(12, 126);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(187, 23);
-            this.button4.TabIndex = 1;
-            this.button4.Text = "Solve";
-            this.button4.UseVisualStyleBackColor = true;
+            this.LoadBtn.Location = new System.Drawing.Point(12, 126);
+            this.LoadBtn.Name = "LoadBtn";
+            this.LoadBtn.Size = new System.Drawing.Size(187, 23);
+            this.LoadBtn.TabIndex = 1;
+            this.LoadBtn.Text = "Load";
+            this.LoadBtn.UseVisualStyleBackColor = true;
+            this.LoadBtn.Click += new System.EventHandler(this.LoadBtn_Click);
             // 
-            // button3
+            // SaveBtn
             // 
-            this.button3.Location = new System.Drawing.Point(12, 88);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(187, 23);
-            this.button3.TabIndex = 1;
-            this.button3.Text = "Save";
-            this.button3.UseVisualStyleBackColor = true;
+            this.SaveBtn.Location = new System.Drawing.Point(12, 88);
+            this.SaveBtn.Name = "SaveBtn";
+            this.SaveBtn.Size = new System.Drawing.Size(187, 23);
+            this.SaveBtn.TabIndex = 1;
+            this.SaveBtn.Text = "Save";
+            this.SaveBtn.UseVisualStyleBackColor = true;
+            this.SaveBtn.Click += new System.EventHandler(this.SaveBtn_Click);
             // 
-            // button2
+            // FillRandomBtn
             // 
-            this.button2.Location = new System.Drawing.Point(12, 50);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(187, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Load";
-            this.button2.UseVisualStyleBackColor = true;
+            this.FillRandomBtn.Location = new System.Drawing.Point(12, 50);
+            this.FillRandomBtn.Name = "FillRandomBtn";
+            this.FillRandomBtn.Size = new System.Drawing.Size(187, 23);
+            this.FillRandomBtn.TabIndex = 1;
+            this.FillRandomBtn.Text = "Fill 5 cells randomly";
+            this.FillRandomBtn.UseVisualStyleBackColor = true;
+            this.FillRandomBtn.Click += new System.EventHandler(this.FillRandomBtn_Click);
             // 
-            // button1
+            // ClearBtn
             // 
-            this.button1.Location = new System.Drawing.Point(12, 12);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(187, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Clear";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.ClearBtn.Location = new System.Drawing.Point(12, 12);
+            this.ClearBtn.Name = "ClearBtn";
+            this.ClearBtn.Size = new System.Drawing.Size(187, 23);
+            this.ClearBtn.TabIndex = 0;
+            this.ClearBtn.Text = "Clear";
+            this.ClearBtn.UseVisualStyleBackColor = true;
+            this.ClearBtn.Click += new System.EventHandler(this.ClearBtn_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -164,10 +167,10 @@
 
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button LoadBtn;
+        private System.Windows.Forms.Button SaveBtn;
+        private System.Windows.Forms.Button FillRandomBtn;
+        private System.Windows.Forms.Button ClearBtn;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
     }
 }
