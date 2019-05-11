@@ -64,5 +64,22 @@ namespace SudokuLogic
                 for (int j = 0; j < 9; j++)
                     solution[i, j] = submission[i, j];
         }
+
+        public void FillRandomCells(int count)
+        {
+            Random rnd = new Random();
+            for (int i = 0; i < count; i++)
+            {
+                for (int attempt = 0; attempt < 1000; attempt++)
+                {
+                    int x = rnd.Next(9);
+                    int y = rnd.Next(9);
+                    if (solution[x, y] != 0) continue;
+                    solution[x, y] = (byte)(rnd.Next(9) + 1);
+                    if (IsSolutionValid()) break;
+                    solution[x, y] = 0;
+                }
+            }
+        }
     }
 }
