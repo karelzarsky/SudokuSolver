@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using static SudokuLogic.SimpleFunctions;
 
 namespace SudokuLogic
@@ -15,9 +16,9 @@ namespace SudokuLogic
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
                 {
-                    if (b.solution[i, j] != 0)
+                    if (b.GetNumber(i, j) != 0)
                     {
-                        byte num = b.solution[i, j];
+                        byte num = b.GetNumber(i, j);
                         int boxNum = GetBoxNumber(i, j);
                         for (int k = 0; k < 9; k++)
                         {
@@ -56,7 +57,12 @@ namespace SudokuLogic
                 {
                     if (1 == Enumerable.Range(1, 9).Count(number => b.possibilities[i, j, number]))
                     {
-                        b.solution[i,j] = (byte)Enumerable.Range(1, 9).First(number => b.possibilities[i, j, number]);
+                        if (!b.CellEmpty(i, j)) continue;
+                        if (!b.TrySetNumber(i, j,
+                            (byte) Enumerable.Range(1, 9).First(number => b.possibilities[i, j, number])))
+                        {
+                            throw new ArgumentException();
+                        }
                         solvedCounter++;
                         BasicPossibilitiesReduction(b);
                     }

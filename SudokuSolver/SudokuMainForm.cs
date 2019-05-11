@@ -35,8 +35,7 @@ namespace SudokuSolver
 
             if (byte.TryParse(keyChar, out byte number))
             {
-                board.solution[selected.Column, selected.Row] = number;
-                if (board.IsSolutionValid())
+                if (board.TrySetNumber(selected.Column, selected.Row, number))
                 {
                     Cells[selected.Column, selected.Row].Controls[0].Text = number == 0 ? "" : number.ToString();
                     SelectNext();
@@ -46,7 +45,6 @@ namespace SudokuSolver
                     Cells[selected.Column, selected.Row].Controls[0].BackColor = Color.Red;
                     Cells[selected.Column, selected.Row].Controls[0].Refresh();
                     SystemSounds.Asterisk.Play();
-                    board.solution[selected.Column, selected.Row] = 0;
                     Thread.Sleep(100);
                     Cells[selected.Column, selected.Row].Controls[0].BackColor = Color.White;
                     Cells[selected.Column, selected.Row].Controls[0].Refresh();
@@ -86,7 +84,7 @@ namespace SudokuSolver
                     {
                         Dock = DockStyle.Fill,
                         BackColor = GetCellColor(i, j),
-                        Text = board.solution[i, j] == 0 ? "" : board.solution[i, j].ToString(),
+                        Text = board.GetNumberAsString(i, j),
                         TextAlign = ContentAlignment.MiddleCenter
                     };
                     label.Click += LabelClick;
@@ -113,14 +111,8 @@ namespace SudokuSolver
 
         private void ClearBtn_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < 9; i++)
-            {
-                for (int j = 0; j < 9; j++)
-                {
-                    Cells[i, j].Controls[0].Text = "";
-                    board.solution[i, j] = 0;
-                }
-            }
+            board.Clear();
+            RefreshBoard();
         }
 
         private void FillRandomBtn_Click(object sender, EventArgs e)
@@ -135,7 +127,7 @@ namespace SudokuSolver
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    Cells[i, j].Controls[0].Text = board.solution[i, j] == 0 ? "" : board.solution[i, j].ToString();
+                    Cells[i, j].Controls[0].Text = board.GetNumberAsString(i, j);
                 }
             }
         }
@@ -165,15 +157,13 @@ namespace SudokuSolver
             {
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    string fileContent;
                     using (var fileStream = openFileDialog.OpenFile())
                     {
                         using (StreamReader reader = new StreamReader(fileStream))
                         {
-                            fileContent = reader.ReadToEnd();
+                            board.FillFromString(reader.ReadToEnd());
                         }
                     }
-                    board.FillFromString(fileContent);
                     RefreshBoard();
                 }
             }

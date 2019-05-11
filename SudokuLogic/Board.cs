@@ -12,7 +12,7 @@ namespace SudokuLogic
     public class Board
     {
         public byte[,] submission = new byte[9, 9]; // Number 0 means empty
-        public byte[,] solution = new byte[9, 9];
+        private byte[,] solution = new byte[9, 9];
         public bool[,,] possibilities = new bool[9, 9, 10]; // False means coordinates I, J cannot be filled with number K
 
         public Board()
@@ -50,6 +50,8 @@ namespace SudokuLogic
             }
             return true;
         }
+
+        internal bool CellEmpty(int i, int j) => solution[i, j] == 0;
 
         public void FillAllPossibilitiesTrue()
         {
@@ -104,11 +106,40 @@ namespace SudokuLogic
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    byte.TryParse(content[characterCounter++].ToString(), out byte number);
-                    solution[i, j] = number;
+                    byte.TryParse(content[characterCounter++].ToString(), out solution[i, j]);
                 }
             }
             FillAllPossibilitiesTrue();
+        }
+
+        public void Clear()
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    solution[i, j] = 0;
+                }
+            }
+            FillAllPossibilitiesTrue();
+        }
+
+        public byte GetNumber(int col, int row) => solution[col, row];
+
+        public string GetNumberAsString(int col, int row) => solution[col, row] == 0 ? "" : solution[col, row].ToString();
+
+        public void SetSolution(byte[,] v) => solution = v;
+
+        public bool TrySetNumber(int col, int row, byte value)
+        {
+            byte oldValue = solution[col, row];
+            solution[col, row] = value;
+            if (IsSolutionValid())
+            {
+                return true;
+            }
+            solution[col, row] = oldValue;
+            return false;
         }
     }
 }

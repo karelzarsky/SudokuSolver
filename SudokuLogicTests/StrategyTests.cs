@@ -18,7 +18,7 @@ namespace SudokuLogicTests
 
             var b = new Board();
             b.FillAllPossibilitiesTrue();
-            b.solution[col, row] = filledNumber;
+            b.TrySetNumber(col, row, filledNumber);
 
             for (int i = 0; i < 9; i++)
             {
