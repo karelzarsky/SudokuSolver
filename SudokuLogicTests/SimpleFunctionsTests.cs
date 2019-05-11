@@ -7,45 +7,87 @@ namespace SudokuLogicTests
     public class SimpleFunctionsTests
     {
         [TestMethod]
-        public void BoxNumber_Tests()
+        public void GroupValid_Correct()
         {
-            Assert.AreEqual(0, BoxNumber(0, 0));
-            Assert.AreEqual(0, BoxNumber(1, 0));
-            Assert.AreEqual(1, BoxNumber(3, 0));
-            Assert.AreEqual(2, BoxNumber(8, 0));
-            Assert.AreEqual(0, BoxNumber(0, 1));
-            Assert.AreEqual(0, BoxNumber(0, 2));
-            Assert.AreEqual(3, BoxNumber(0, 3));
-            Assert.AreEqual(8, BoxNumber(8, 8));
-            Assert.AreEqual(8, BoxNumber(6, 6));
+            Assert.IsTrue(IsGroupValid(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }));
+            Assert.IsTrue(IsGroupValid(new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1 }));
+            Assert.IsTrue(IsGroupValid(new byte[] { 2, 3, 4, 5, 6, 7, 8, 9, 1 }));
         }
 
         [TestMethod]
-        public void BoxXCoordinates()
+        public void GroupValid_MissingNumber()
         {
-            Assert.AreEqual(0, BoxX(0, 0));
-            Assert.AreEqual(1, BoxX(0, 1));
-            Assert.AreEqual(2, BoxX(0, 8));
-            Assert.AreEqual(3, BoxX(1, 0));
-            Assert.AreEqual(6, BoxX(2, 0));
-            Assert.AreEqual(8, BoxX(2, 2));
-            Assert.AreEqual(0, BoxX(3, 0));
-            Assert.AreEqual(3, BoxX(4, 0));
-            Assert.AreEqual(8, BoxX(8, 8));
+            Assert.IsTrue(IsGroupValid(new byte[] { 1, 2, 3, 4, 0, 6, 7, 8, 9 }));
         }
 
         [TestMethod]
-        public void BoxYCoordinates()
+        public void GroupValid_DoubleNumber()
         {
-            Assert.AreEqual(0, BoxY(0, 0));
-            Assert.AreEqual(0, BoxY(0, 1));
-            Assert.AreEqual(2, BoxY(0, 8));
-            Assert.AreEqual(0, BoxY(1, 0));
-            Assert.AreEqual(0, BoxY(2, 0));
-            Assert.AreEqual(0, BoxY(2, 2));
-            Assert.AreEqual(3, BoxY(3, 0));
-            Assert.AreEqual(3, BoxY(4, 0));
-            Assert.AreEqual(8, BoxY(8, 8));
+            Assert.IsFalse(IsGroupValid(new byte[] { 1, 2, 3, 3, 5, 6, 7, 8, 9 }));
+            Assert.IsFalse(IsGroupValid(new byte[] { 2, 3, 4, 5, 5, 5, 8, 9, 1 }));
+        }
+
+        [TestMethod]
+        public void GroupSolved_Correct()
+        {
+            Assert.IsTrue(IsGroupSolved(new byte[] { 1, 2, 3, 4, 5, 6, 7, 8, 9 }));
+            Assert.IsTrue(IsGroupSolved(new byte[] { 9, 8, 7, 6, 5, 4, 3, 2, 1 }));
+            Assert.IsTrue(IsGroupSolved(new byte[] { 2, 3, 4, 5, 6, 7, 8, 9, 1 }));
+        }
+
+        [TestMethod]
+        public void GroupSolved_DoubleNumber()
+        {
+            Assert.IsFalse(IsGroupSolved(new byte[] { 1, 2, 3, 3, 5, 6, 7, 8, 9 }));
+            Assert.IsFalse(IsGroupSolved(new byte[] { 2, 3, 4, 5, 5, 5, 8, 9, 1 }));
+        }
+
+        [TestMethod]
+        public void GroupSolved_MissingNumber()
+        {
+            Assert.IsFalse(IsGroupSolved(new byte[] { 1, 2, 3, 4, 0, 6, 7, 8, 9 }));
+        }
+
+        [TestMethod]
+        public void GetBoxNumber_Tests()
+        {
+            Assert.AreEqual(0, GetBoxNumber(0, 0));
+            Assert.AreEqual(0, GetBoxNumber(1, 0));
+            Assert.AreEqual(1, GetBoxNumber(3, 0));
+            Assert.AreEqual(2, GetBoxNumber(8, 0));
+            Assert.AreEqual(0, GetBoxNumber(0, 1));
+            Assert.AreEqual(0, GetBoxNumber(0, 2));
+            Assert.AreEqual(3, GetBoxNumber(0, 3));
+            Assert.AreEqual(8, GetBoxNumber(8, 8));
+            Assert.AreEqual(8, GetBoxNumber(6, 6));
+        }
+
+        [TestMethod]
+        public void GetColumnNumber_Test()
+        {
+            Assert.AreEqual(0, GetColumnNumber(0, 0));
+            Assert.AreEqual(1, GetColumnNumber(0, 1));
+            Assert.AreEqual(2, GetColumnNumber(0, 8));
+            Assert.AreEqual(3, GetColumnNumber(1, 0));
+            Assert.AreEqual(6, GetColumnNumber(2, 0));
+            Assert.AreEqual(8, GetColumnNumber(2, 2));
+            Assert.AreEqual(0, GetColumnNumber(3, 0));
+            Assert.AreEqual(3, GetColumnNumber(4, 0));
+            Assert.AreEqual(8, GetColumnNumber(8, 8));
+        }
+
+        [TestMethod]
+        public void GetRowNumber_Tests()
+        {
+            Assert.AreEqual(0, GetRowNumber(0, 0));
+            Assert.AreEqual(0, GetRowNumber(0, 1));
+            Assert.AreEqual(2, GetRowNumber(0, 8));
+            Assert.AreEqual(0, GetRowNumber(1, 0));
+            Assert.AreEqual(0, GetRowNumber(2, 0));
+            Assert.AreEqual(0, GetRowNumber(2, 2));
+            Assert.AreEqual(3, GetRowNumber(3, 0));
+            Assert.AreEqual(3, GetRowNumber(4, 0));
+            Assert.AreEqual(8, GetRowNumber(8, 8));
         }
     }
 }

@@ -26,7 +26,7 @@ namespace SudokuSolver
             for (int i = 0; i < 9; i++)
                 for (int j = 0; j < 9; j++)
                 {
-                    var color = (i / 3 + j / 3) % 2 == 0
+                    var color = ((i / 3) + (j / 3)) % 2 == 0
                         ? Color.DarkGray
                         : Color.BurlyWood;
                     var panel = new Panel // for vertical allignment
