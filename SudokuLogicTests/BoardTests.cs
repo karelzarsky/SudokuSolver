@@ -4,7 +4,7 @@ using SudokuLogic;
 namespace SudokuLogicTests
 {
     [TestClass]
-    public class SudokuTests
+    public class BoardTests
     {
         [TestMethod]
         public void SolutionSolved_Correct()
@@ -36,6 +36,51 @@ namespace SudokuLogicTests
                 solution = new byte[,]
                 {
                     {6, 6, 8, 5, 3, 2, 1, 4, 7},
+                    {7, 1, 5, 6, 8, 4, 9, 2, 3},
+                    {3, 4, 2, 1, 7, 9, 8, 6, 5},
+                    {4, 8, 6, 7, 2, 3, 5, 9, 1},
+                    {9, 2, 1, 4, 5, 8, 3, 7, 6},
+                    {5, 3, 7, 9, 6, 1, 2, 8, 4},
+                    {2, 5, 4, 8, 1, 7, 6, 3, 9},
+                    {8, 6, 9, 3, 4, 5, 7, 1, 2},
+                    {1, 7, 3, 2, 9, 6, 4, 5, 8}
+                }
+            };
+
+            Assert.IsFalse(board.IsSolutionSolved());
+        }
+
+        [TestMethod]
+        public void SolutionSolved_Incorrect_Double7InMiddleBox()
+        {
+            var board = new Board
+            {
+                solution = new byte[,]
+                {
+                    {6, 9, 8, 5, 3, 2, 1, 4, 7},
+                    {7, 1, 5, 6, 8, 4, 9, 2, 3},
+                    {3, 4, 2, 1, 7, 9, 8, 6, 5},
+                    {4, 8, 6, 7, 2, 3, 5, 9, 1},
+                    {9, 2, 1, 4, 7, 8, 3, 7, 6},
+                    {5, 3, 7, 9, 6, 1, 2, 8, 4},
+                    {2, 5, 4, 8, 1, 7, 6, 3, 9},
+                    {8, 6, 9, 3, 4, 5, 7, 1, 2},
+                    {1, 7, 3, 2, 9, 6, 4, 5, 8}
+                }
+            };
+
+            Assert.IsFalse(board.IsSolutionSolved());
+        }
+
+
+        [TestMethod]
+        public void SolutionSolved_Incorrect_Double1InColumn7()
+        {
+            var board = new Board
+            {
+                solution = new byte[,]
+                {
+                    {6, 9, 8, 5, 3, 2, 1, 1, 7},
                     {7, 1, 5, 6, 8, 4, 9, 2, 3},
                     {3, 4, 2, 1, 7, 9, 8, 6, 5},
                     {4, 8, 6, 7, 2, 3, 5, 9, 1},
@@ -205,25 +250,25 @@ namespace SudokuLogicTests
                 }
             };
 
-            Assert.AreEqual(board.Box(0)[0], 6);
-            Assert.AreEqual(board.Box(0)[1], 9);
-            Assert.AreEqual(board.Box(0)[2], 8);
-            Assert.AreEqual(board.Box(0)[3], 7);
-            Assert.AreEqual(board.Box(0)[4], 1);
-            Assert.AreEqual(board.Box(0)[5], 5);
-            Assert.AreEqual(board.Box(0)[6], 3);
-            Assert.AreEqual(board.Box(0)[7], 4);
-            Assert.AreEqual(board.Box(0)[8], 2);
+            Assert.AreEqual(6, board.Box(0)[0]);
+            Assert.AreEqual(9, board.Box(0)[1]);
+            Assert.AreEqual(8, board.Box(0)[2]);
+            Assert.AreEqual(7, board.Box(0)[3]);
+            Assert.AreEqual(1, board.Box(0)[4]);
+            Assert.AreEqual(5, board.Box(0)[5]);
+            Assert.AreEqual(3, board.Box(0)[6]);
+            Assert.AreEqual(4, board.Box(0)[7]);
+            Assert.AreEqual(2, board.Box(0)[8]);
 
-            Assert.AreEqual(board.Box(8)[0], 6);
-            Assert.AreEqual(board.Box(8)[1], 3);
-            Assert.AreEqual(board.Box(8)[2], 9);
-            Assert.AreEqual(board.Box(8)[3], 7);
-            Assert.AreEqual(board.Box(8)[4], 1);
-            Assert.AreEqual(board.Box(8)[5], 2);
-            Assert.AreEqual(board.Box(8)[6], 4);
-            Assert.AreEqual(board.Box(8)[7], 5);
-            Assert.AreEqual(board.Box(8)[8], 8);
+            Assert.AreEqual(6, board.Box(8)[0]);
+            Assert.AreEqual(3, board.Box(8)[1]);
+            Assert.AreEqual(9, board.Box(8)[2]);
+            Assert.AreEqual(7, board.Box(8)[3]);
+            Assert.AreEqual(1, board.Box(8)[4]);
+            Assert.AreEqual(2, board.Box(8)[5]);
+            Assert.AreEqual(4, board.Box(8)[6]);
+            Assert.AreEqual(5, board.Box(8)[7]);
+            Assert.AreEqual(8, board.Box(8)[8]);
         }
 
         [TestMethod]
@@ -305,5 +350,6 @@ namespace SudokuLogicTests
             Assert.AreEqual(board.Col(8)[7], 2);
             Assert.AreEqual(board.Col(8)[8], 8);
         }
+
     }
 }
