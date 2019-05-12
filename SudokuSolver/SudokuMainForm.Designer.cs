@@ -32,13 +32,14 @@ namespace SudokuSolver
         {
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.BruteForceBtn = new System.Windows.Forms.Button();
             this.OneStepBtn = new System.Windows.Forms.Button();
             this.LoadBtn = new System.Windows.Forms.Button();
             this.SaveBtn = new System.Windows.Forms.Button();
             this.FillRandomBtn = new System.Windows.Forms.Button();
             this.ClearBtn = new System.Windows.Forms.Button();
-            this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.BruteForceBtn = new System.Windows.Forms.Button();
+            this.mainMatrix = new System.Windows.Forms.TableLayoutPanel();
+            this.hintsChk = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -62,6 +63,7 @@ namespace SudokuSolver
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.hintsChk);
             this.splitContainer1.Panel1.Controls.Add(this.BruteForceBtn);
             this.splitContainer1.Panel1.Controls.Add(this.OneStepBtn);
             this.splitContainer1.Panel1.Controls.Add(this.LoadBtn);
@@ -72,10 +74,20 @@ namespace SudokuSolver
             // 
             // splitContainer1.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.tableLayoutPanel1);
+            this.splitContainer1.Panel2.Controls.Add(this.mainMatrix);
             this.splitContainer1.Size = new System.Drawing.Size(917, 676);
             this.splitContainer1.SplitterDistance = 213;
             this.splitContainer1.TabIndex = 2;
+            // 
+            // BruteForceBtn
+            // 
+            this.BruteForceBtn.Location = new System.Drawing.Point(12, 384);
+            this.BruteForceBtn.Name = "BruteForceBtn";
+            this.BruteForceBtn.Size = new System.Drawing.Size(187, 23);
+            this.BruteForceBtn.TabIndex = 2;
+            this.BruteForceBtn.Text = "Brute force";
+            this.BruteForceBtn.UseVisualStyleBackColor = true;
+            this.BruteForceBtn.Click += new System.EventHandler(this.BruteForceBtn_Click);
             // 
             // OneStepBtn
             // 
@@ -127,48 +139,49 @@ namespace SudokuSolver
             this.ClearBtn.UseVisualStyleBackColor = true;
             this.ClearBtn.Click += new System.EventHandler(this.ClearBtn_Click);
             // 
-            // tableLayoutPanel1
+            // mainMatrix
             // 
-            this.tableLayoutPanel1.AutoSize = true;
-            this.tableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tableLayoutPanel1.ColumnCount = 9;
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel1.Font = new System.Drawing.Font("Arial Black", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(10);
-            this.tableLayoutPanel1.Name = "tableLayoutPanel1";
-            this.tableLayoutPanel1.Padding = new System.Windows.Forms.Padding(10);
-            this.tableLayoutPanel1.RowCount = 9;
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(700, 676);
-            this.tableLayoutPanel1.TabIndex = 0;
+            this.mainMatrix.AutoSize = true;
+            this.mainMatrix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.mainMatrix.ColumnCount = 9;
+            this.mainMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.mainMatrix.Font = new System.Drawing.Font("Arial Black", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.mainMatrix.Location = new System.Drawing.Point(0, 0);
+            this.mainMatrix.Margin = new System.Windows.Forms.Padding(10);
+            this.mainMatrix.Name = "mainMatrix";
+            this.mainMatrix.Padding = new System.Windows.Forms.Padding(10);
+            this.mainMatrix.RowCount = 9;
+            this.mainMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 11.11111F));
+            this.mainMatrix.Size = new System.Drawing.Size(700, 676);
+            this.mainMatrix.TabIndex = 0;
             // 
-            // BruteForceBtn
+            // hintsChk
             // 
-            this.BruteForceBtn.Location = new System.Drawing.Point(12, 384);
-            this.BruteForceBtn.Name = "BruteForceBtn";
-            this.BruteForceBtn.Size = new System.Drawing.Size(187, 23);
-            this.BruteForceBtn.TabIndex = 2;
-            this.BruteForceBtn.Text = "Brute force";
-            this.BruteForceBtn.UseVisualStyleBackColor = true;
-            this.BruteForceBtn.Click += new System.EventHandler(this.BruteForceBtn_Click);
+            this.hintsChk.AutoSize = true;
+            this.hintsChk.Location = new System.Drawing.Point(53, 617);
+            this.hintsChk.Name = "hintsChk";
+            this.hintsChk.Size = new System.Drawing.Size(78, 17);
+            this.hintsChk.TabIndex = 3;
+            this.hintsChk.Text = "Show hints";
+            this.hintsChk.UseVisualStyleBackColor = true;
+            this.hintsChk.CheckedChanged += new System.EventHandler(this.hintsChk_CheckedChanged);
             // 
             // SudokuMainForm
             // 
@@ -180,6 +193,7 @@ namespace SudokuSolver
             this.Name = "SudokuMainForm";
             this.Text = "Sudoku solver";
             this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.Panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
@@ -197,9 +211,10 @@ namespace SudokuSolver
         private System.Windows.Forms.Button SaveBtn;
         private System.Windows.Forms.Button FillRandomBtn;
         private System.Windows.Forms.Button ClearBtn;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel mainMatrix;
         private System.Windows.Forms.Button OneStepBtn;
         private System.Windows.Forms.Button BruteForceBtn;
+        private System.Windows.Forms.CheckBox hintsChk;
     }
 }
 

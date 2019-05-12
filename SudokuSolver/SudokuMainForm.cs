@@ -18,7 +18,7 @@ namespace SudokuSolver
         {
             InitializeComponent();
             board.FillRandomCells(30);
-            PrepareBoard();
+            CreateBoard();
             KeyPreview = true;
             KeyDown += OnKeyDown;
         }
@@ -67,66 +67,83 @@ namespace SudokuSolver
                 ? Color.DarkGray
                 : Color.BurlyWood;
 
-        private void PrepareBoard()
+        private void CreateBoard()
         {
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    var panel = Cells[i, j] = new Panel
+                    var cellPnl = Cells[i, j] = new Panel
                     {
                         Dock = DockStyle.Fill,
                         BackColor = GetCellColor(i, j),
                         Margin = new Padding(5),
                     };
-                    var label = new Label
+                    var bigNumberLbl = new Label
                     {
                         Dock = DockStyle.Fill,
                         Text = board.GetNumberAsString(i, j),
                         TextAlign = ContentAlignment.MiddleCenter,
-                        Visible = false
+                        Visible = false,
                     };
-                    var bulletPannel = CreateBulletPanel();
-                    label.Click += LabelClick;
-                    bulletPannel.Click += LabelClick;
-                    tableLayoutPanel1.Controls.Add(panel, i, j);
-                    panel.Controls.Add(label);
-                    panel.Controls.Add(bulletPannel);
+                    var hintPanel = CreateHintPanel();
+                    bigNumberLbl.Click += NumberClick;
+                    cellPnl.Click += PnlClick;
+                    mainMatrix.Controls.Add(cellPnl, i, j);
+                    cellPnl.Controls.Add(bigNumberLbl);
+                    cellPnl.Controls.Add(hintPanel);
                 }
             }
             RefreshBoard();
             SelectCell(new TableLayoutPanelCellPosition(0, 0));
         }
 
-        private static TableLayoutPanel CreateBulletPanel()
+        private TableLayoutPanel CreateHintPanel()
         {
-            var bulletPannel = new TableLayoutPanel
-                { Dock = DockStyle.Fill, Font = new Font("Arial", 8F), Visible = false};
+            var hintPanel = new TableLayoutPanel
+                { Dock = DockStyle.Fill, Font = new Font("Arial Narrow", 8F), BorderStyle = BorderStyle.None, Visible = false};
             for (int j = 0; j < 3; j++)
             {
-                bulletPannel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33F));
-                bulletPannel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
+                hintPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33F));
+                hintPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
                 for (int i = 0; i < 3; i++)
                 {
-                    bulletPannel.Controls.Add(new Label {TextAlign = ContentAlignment.MiddleCenter}, i, j);
-                    // ○○◌●○●•
+                    var hintLbl = new Label {TextAlign = ContentAlignment.MiddleCenter};
+                    hintLbl.Click += HintClick;
+                    hintPanel.Controls.Add(hintLbl, i, j);
                 }
             }
-            return bulletPannel;
+            return hintPanel;
         }
 
-        private void LabelClick(object sender, EventArgs e)
+        private void HintClick(object sender, EventArgs e)
         {
-            Panel p;
-            if (sender is TableLayoutPanel)
+            var lbl = (Label) sender;
+            byte.TryParse(lbl.Text, out byte num);
+            var pnl = (Panel)((Control)sender).Parent;
+            var pos = mainMatrix.GetCellPosition(pnl.Parent);
+            if (num != 0)
             {
-                p = (Panel)((TableLayoutPanel)sender).Parent;
+                board.TrySetNumber(pos.Column, pos.Row, num, Source.Keyboard);
+                RefreshBoard();
             }
-            else
-            {
-                p = (Panel)((Label)sender).Parent;
-            }
-            SelectCell(((TableLayoutPanel)p.Parent).GetCellPosition(p));
+            if (pos.Column != -1)
+                SelectCell(pos);
+        }
+
+        private void PnlClick(object sender, EventArgs e)
+        {
+            var pos = mainMatrix.GetCellPosition((Panel)sender);
+            if (pos.Column != -1)
+                SelectCell(pos);
+        }
+
+        private void NumberClick(object sender, EventArgs e)
+        {
+            var pnl = (Panel)((Control)sender).Parent;
+            var pos = mainMatrix.GetCellPosition(pnl);
+            if (pos.Column != -1)
+                SelectCell(pos);
         }
 
         private void SelectCell(TableLayoutPanelCellPosition pos)
@@ -165,10 +182,17 @@ namespace SudokuSolver
             if (board.CellEmpty(i, j))
             {
                 Cells[i, j].Controls[0].Visible = false;
-                Cells[i, j].Controls[1].Visible = true;
-                for (int k = 0; k < 9; k++)
+                if (hintsChk.Checked)
                 {
-                    Cells[i, j].Controls[1].Controls[k].Text = board.possibilities[i, j, k + 1] ? (k+1).ToString() : "";
+                    Cells[i, j].Controls[1].Visible = true;
+                    for (int k = 0; k < 9; k++)
+                    {
+                        Cells[i, j].Controls[1].Controls[k].Text = board.possibilities[i, j, k + 1] ? (k + 1).ToString() : "";
+                    }
+                }
+                else
+                {
+                    Cells[i, j].Controls[1].Visible = false;
                 }
             }
             else
@@ -226,6 +250,11 @@ namespace SudokuSolver
         private void BruteForceBtn_Click(object sender, EventArgs e)
         {
             var solutions = Strategies.BruteForce(board);
+            RefreshBoard();
+        }
+
+        private void hintsChk_CheckedChanged(object sender, EventArgs e)
+        {
             RefreshBoard();
         }
     }
