@@ -51,7 +51,7 @@ namespace SudokuLogic
             return true;
         }
 
-        internal bool CellEmpty(int i, int j) => solution[i, j] == 0;
+        public bool CellEmpty(int i, int j) => solution[i, j] == 0;
 
         public void FillAllPossibilitiesTrue()
         {

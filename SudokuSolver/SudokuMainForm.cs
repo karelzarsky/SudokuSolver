@@ -1,10 +1,8 @@
 ﻿using SudokuLogic;
 using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Media;
-using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -37,17 +35,17 @@ namespace SudokuSolver
             {
                 if (board.TrySetNumber(selected.Column, selected.Row, number, Source.Keyboard))
                 {
-                    Cells[selected.Column, selected.Row].Controls[0].Text = number == 0 ? "" : number.ToString();
+                    RefreshBoard();
                     SelectNext();
                 }
                 else
                 {
-                    Cells[selected.Column, selected.Row].Controls[0].BackColor = Color.Red;
-                    Cells[selected.Column, selected.Row].Controls[0].Refresh();
+                    Cells[selected.Column, selected.Row].BackColor = Color.Red;
+                    Cells[selected.Column, selected.Row].Refresh();
                     SystemSounds.Asterisk.Play();
                     Thread.Sleep(100);
-                    Cells[selected.Column, selected.Row].Controls[0].BackColor = Color.White;
-                    Cells[selected.Column, selected.Row].Controls[0].Refresh();
+                    Cells[selected.Column, selected.Row].BackColor = Color.White;
+                    Cells[selected.Column, selected.Row].Refresh();
                 }
             }
         }
@@ -78,35 +76,64 @@ namespace SudokuSolver
                     var panel = Cells[i, j] = new Panel
                     {
                         Dock = DockStyle.Fill,
+                        BackColor = GetCellColor(i, j),
                         Margin = new Padding(5),
                     };
                     var label = new Label
                     {
                         Dock = DockStyle.Fill,
-                        BackColor = GetCellColor(i, j),
                         Text = board.GetNumberAsString(i, j),
-                        TextAlign = ContentAlignment.MiddleCenter
+                        TextAlign = ContentAlignment.MiddleCenter,
+                        Visible = false
                     };
+                    var bulletPannel = CreateBulletPanel();
                     label.Click += LabelClick;
-                    panel.Controls.Add(label);
+                    bulletPannel.Click += LabelClick;
                     tableLayoutPanel1.Controls.Add(panel, i, j);
+                    panel.Controls.Add(label);
+                    panel.Controls.Add(bulletPannel);
                 }
             }
-
+            RefreshBoard();
             SelectCell(new TableLayoutPanelCellPosition(0, 0));
+        }
+
+        private static TableLayoutPanel CreateBulletPanel()
+        {
+            var bulletPannel = new TableLayoutPanel
+                { Dock = DockStyle.Fill, Font = new Font("Arial", 8F), Visible = false};
+            for (int j = 0; j < 3; j++)
+            {
+                bulletPannel.RowStyles.Add(new RowStyle(SizeType.Percent, 33.33F));
+                bulletPannel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 33.33F));
+                for (int i = 0; i < 3; i++)
+                {
+                    bulletPannel.Controls.Add(new Label {TextAlign = ContentAlignment.MiddleCenter}, i, j);
+                    // ○○◌●○●•
+                }
+            }
+            return bulletPannel;
         }
 
         private void LabelClick(object sender, EventArgs e)
         {
-            Panel p = (Panel)((Label)sender).Parent;
+            Panel p;
+            if (sender is TableLayoutPanel)
+            {
+                p = (Panel)((TableLayoutPanel)sender).Parent;
+            }
+            else
+            {
+                p = (Panel)((Label)sender).Parent;
+            }
             SelectCell(((TableLayoutPanel)p.Parent).GetCellPosition(p));
         }
 
         private void SelectCell(TableLayoutPanelCellPosition pos)
         {
-            Cells[selected.Column, selected.Row].Controls[0].BackColor = GetCellColor(selected.Column, selected.Row);
+            Cells[selected.Column, selected.Row].BackColor = GetCellColor(selected.Column, selected.Row);
             selected = pos;
-            Cells[selected.Column, selected.Row].Controls[0].BackColor = Color.White;
+            Cells[selected.Column, selected.Row].BackColor = Color.White;
         }
 
         private void ClearBtn_Click(object sender, EventArgs e)
@@ -123,12 +150,32 @@ namespace SudokuSolver
 
         private void RefreshBoard()
         {
+            Strategies.BasicPossibilitiesReduction(board);
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    Cells[i, j].Controls[0].Text = board.GetNumberAsString(i, j);
+                    RefreshCell(i, j);
                 }
+            }
+        }
+
+        private void RefreshCell(int i, int j)
+        {
+            if (board.CellEmpty(i, j))
+            {
+                Cells[i, j].Controls[0].Visible = false;
+                Cells[i, j].Controls[1].Visible = true;
+                for (int k = 0; k < 9; k++)
+                {
+                    Cells[i, j].Controls[1].Controls[k].Text = board.possibilities[i, j, k + 1] ? (k+1).ToString() : "";
+                }
+            }
+            else
+            {
+                Cells[i, j].Controls[0].Text = board.GetNumberAsString(i, j);
+                Cells[i, j].Controls[1].Visible = false;
+                Cells[i, j].Controls[0].Visible = true;
             }
         }
 
