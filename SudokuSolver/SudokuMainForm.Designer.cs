@@ -1,4 +1,6 @@
-﻿namespace SudokuSolver
+﻿using System;
+
+namespace SudokuSolver
 {
     partial class SudokuMainForm
     {
@@ -30,12 +32,13 @@
         {
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.OneStepBtn = new System.Windows.Forms.Button();
             this.LoadBtn = new System.Windows.Forms.Button();
             this.SaveBtn = new System.Windows.Forms.Button();
             this.FillRandomBtn = new System.Windows.Forms.Button();
             this.ClearBtn = new System.Windows.Forms.Button();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
-            this.OneStepBtn = new System.Windows.Forms.Button();
+            this.BruteForceBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -59,6 +62,7 @@
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.BruteForceBtn);
             this.splitContainer1.Panel1.Controls.Add(this.OneStepBtn);
             this.splitContainer1.Panel1.Controls.Add(this.LoadBtn);
             this.splitContainer1.Panel1.Controls.Add(this.SaveBtn);
@@ -72,6 +76,16 @@
             this.splitContainer1.Size = new System.Drawing.Size(917, 676);
             this.splitContainer1.SplitterDistance = 213;
             this.splitContainer1.TabIndex = 2;
+            // 
+            // OneStepBtn
+            // 
+            this.OneStepBtn.Location = new System.Drawing.Point(12, 168);
+            this.OneStepBtn.Name = "OneStepBtn";
+            this.OneStepBtn.Size = new System.Drawing.Size(187, 23);
+            this.OneStepBtn.TabIndex = 2;
+            this.OneStepBtn.Text = "Solve - one step";
+            this.OneStepBtn.UseVisualStyleBackColor = true;
+            this.OneStepBtn.Click += new System.EventHandler(this.OneStepBtn_Click);
             // 
             // LoadBtn
             // 
@@ -146,15 +160,15 @@
             this.tableLayoutPanel1.Size = new System.Drawing.Size(700, 676);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
-            // OneStepBtn
+            // BruteForceBtn
             // 
-            this.OneStepBtn.Location = new System.Drawing.Point(12, 168);
-            this.OneStepBtn.Name = "OneStepBtn";
-            this.OneStepBtn.Size = new System.Drawing.Size(187, 23);
-            this.OneStepBtn.TabIndex = 2;
-            this.OneStepBtn.Text = "Solve - one step";
-            this.OneStepBtn.UseVisualStyleBackColor = true;
-            this.OneStepBtn.Click += new System.EventHandler(this.OneStepBtn_Click);
+            this.BruteForceBtn.Location = new System.Drawing.Point(12, 384);
+            this.BruteForceBtn.Name = "BruteForceBtn";
+            this.BruteForceBtn.Size = new System.Drawing.Size(187, 23);
+            this.BruteForceBtn.TabIndex = 2;
+            this.BruteForceBtn.Text = "Brute force";
+            this.BruteForceBtn.UseVisualStyleBackColor = true;
+            this.BruteForceBtn.Click += new System.EventHandler(this.BruteForceBtn_Click);
             // 
             // SudokuMainForm
             // 
@@ -185,6 +199,7 @@
         private System.Windows.Forms.Button ClearBtn;
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.Button OneStepBtn;
+        private System.Windows.Forms.Button BruteForceBtn;
     }
 }
 

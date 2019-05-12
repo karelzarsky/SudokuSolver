@@ -35,7 +35,7 @@ namespace SudokuSolver
 
             if (byte.TryParse(keyChar, out byte number))
             {
-                if (board.TrySetNumber(selected.Column, selected.Row, number))
+                if (board.TrySetNumber(selected.Column, selected.Row, number, Source.Keyboard))
                 {
                     Cells[selected.Column, selected.Row].Controls[0].Text = number == 0 ? "" : number.ToString();
                     SelectNext();
@@ -173,6 +173,12 @@ namespace SudokuSolver
         {
             Strategies.BasicPossibilitiesReduction(board);
             Strategies.CheckForSolvedCells(board);
+            RefreshBoard();
+        }
+
+        private void BruteForceBtn_Click(object sender, EventArgs e)
+        {
+            var solutions = Strategies.BruteForce(board);
             RefreshBoard();
         }
     }

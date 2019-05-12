@@ -11,9 +11,9 @@ namespace SudokuLogic
     /// </summary>
     public class Board
     {
-        public byte[,] submission = new byte[9, 9]; // Number 0 means empty
-        private byte[,] solution = new byte[9, 9];
+        public byte[,] solution = new byte[9, 9]; // Number 0 means empty
         public bool[,,] possibilities = new bool[9, 9, 10]; // False means coordinates I, J cannot be filled with number K
+        public Source[,] sources = new Source[9,9];
 
         public Board()
         {
@@ -61,13 +61,6 @@ namespace SudokuLogic
                         possibilities[i, j, k] = true;
         }
 
-        public void CopySubmissionToSolution()
-        {
-            for (int i = 0; i < 9; i++)
-                for (int j = 0; j < 9; j++)
-                    solution[i, j] = submission[i, j];
-        }
-
         public void FillRandomCells(int count)
         {
             Random rnd = new Random();
@@ -77,10 +70,10 @@ namespace SudokuLogic
                 {
                     int x = rnd.Next(9);
                     int y = rnd.Next(9);
-                    if (solution[x, y] != 0) continue;
-                    solution[x, y] = (byte)(rnd.Next(9) + 1);
-                    if (IsSolutionValid()) break;
-                    solution[x, y] = 0;
+                    if (solution[x, y] != 0)
+                        continue;
+                    if (TrySetNumber(x, y, (byte) (rnd.Next(9) + 1), Source.Random))
+                        break;
                 }
             }
         }
@@ -101,12 +94,15 @@ namespace SudokuLogic
         public void FillFromString(string content)
         {
             if (content.Length < 81) return;
+            Clear();
             int characterCounter = 0;
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
                 {
                     byte.TryParse(content[characterCounter++].ToString(), out solution[i, j]);
+                    if (solution[i, j] > 0)
+                        sources[i, j] = Source.File;
                 }
             }
             FillAllPossibilitiesTrue();
@@ -119,6 +115,7 @@ namespace SudokuLogic
                 for (int j = 0; j < 9; j++)
                 {
                     solution[i, j] = 0;
+                    sources[i, j] = Source.Empty;
                 }
             }
             FillAllPossibilitiesTrue();
@@ -130,16 +127,35 @@ namespace SudokuLogic
 
         public void SetSolution(byte[,] v) => solution = v;
 
-        public bool TrySetNumber(int col, int row, byte value)
+        /// <summary>
+        /// Fills number in entered coordinates. Tests for validity.
+        /// </summary>
+        /// <param name="col">Column</param>
+        /// <param name="row">Row</param>
+        /// <param name="value">number to be entered</param>
+        /// <param name="s">source</param>
+        /// <returns>True for success. False for invalid entry.</returns>
+        public bool TrySetNumber(int col, int row, byte value, Source s)
         {
             byte oldValue = solution[col, row];
             solution[col, row] = value;
             if (IsSolutionValid())
             {
+                sources[col, row] = s;
                 return true;
             }
             solution[col, row] = oldValue;
             return false;
+        }
+
+        public int GetNumberOfFilled()
+        {
+            int res = 0;
+            foreach (var n in solution)
+            {
+                if (n > 0) res++;
+            }
+            return res;
         }
     }
 }

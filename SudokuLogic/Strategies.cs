@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Forms;
 using static SudokuLogic.SimpleFunctions;
 
 namespace SudokuLogic
@@ -14,6 +16,7 @@ namespace SudokuLogic
         {
             int removedCounter = 0;
             for (int i = 0; i < 9; i++)
+            {
                 for (int j = 0; j < 9; j++)
                 {
                     if (b.GetNumber(i, j) != 0)
@@ -41,6 +44,8 @@ namespace SudokuLogic
                         }
                     }
                 }
+            }
+
             return removedCounter;
         }
 
@@ -53,13 +58,18 @@ namespace SudokuLogic
         {
             int solvedCounter = 0;
             for (int i = 0; i < 9; i++)
+            {
                 for (int j = 0; j < 9; j++)
                 {
                     if (1 == Enumerable.Range(1, 9).Count(number => b.possibilities[i, j, number]))
                     {
-                        if (!b.CellEmpty(i, j)) continue;
+                        if (!b.CellEmpty(i, j))
+                        {
+                            continue;
+                        }
+
                         if (!b.TrySetNumber(i, j,
-                            (byte) Enumerable.Range(1, 9).First(number => b.possibilities[i, j, number])))
+                            (byte)Enumerable.Range(1, 9).First(number => b.possibilities[i, j, number]), Source.Solver))
                         {
                             throw new ArgumentException();
                         }
@@ -67,7 +77,68 @@ namespace SudokuLogic
                         BasicPossibilitiesReduction(b);
                     }
                 }
+            }
+
             return solvedCounter;
+        }
+
+        public static int BruteForce(Board b)
+        {
+            var EmptyCell = GetEmptyCell(b);
+            if (EmptyCell.Column == 10)
+            {
+                return 1;
+            }
+
+            int solutions = 0;
+            for (byte num = 1; num < 10; num++)
+            {
+                if (!b.possibilities[EmptyCell.Column, EmptyCell.Row, num]) continue;
+                if (b.TrySetNumber(EmptyCell.Column, EmptyCell.Row, num, Source.BruteForce))
+                {
+                    int found = BruteForce(b);
+                    if (found > 0)
+                    {
+                        solutions += found;
+                    }
+                    else
+                    {
+                        b.solution[EmptyCell.Column, EmptyCell.Row] = 0;
+                    }
+                }
+            }
+            return solutions;
+        }
+
+        private static TableLayoutPanelCellPosition GetEmptyCell(Board b)
+        {
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    if (b.CellEmpty(i, j))
+                    {
+                        return new TableLayoutPanelCellPosition(i, j);
+                    }
+                }
+            }
+            return new TableLayoutPanelCellPosition(10, 10);
+        }
+
+        private static IEnumerable<TableLayoutPanelCellPosition> GetEmptyCells(Board b)
+        {
+            var res = new List<TableLayoutPanelCellPosition>();
+            for (int i = 0; i < 9; i++)
+            {
+                for (int j = 0; j < 9; j++)
+                {
+                    if (b.CellEmpty(i, j))
+                    {
+                        res.Add(new TableLayoutPanelCellPosition(i, j));
+                    }
+                }
+            }
+            return res;
         }
     }
 }
