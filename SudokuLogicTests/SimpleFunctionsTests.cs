@@ -65,29 +65,29 @@ namespace SudokuLogicTests
         [TestMethod]
         public void GetColumnNumber_Test()
         {
-            Assert.AreEqual(0, GetColumnNumber(0, 0));
-            Assert.AreEqual(1, GetColumnNumber(0, 1));
-            Assert.AreEqual(2, GetColumnNumber(0, 8));
-            Assert.AreEqual(3, GetColumnNumber(1, 0));
-            Assert.AreEqual(6, GetColumnNumber(2, 0));
-            Assert.AreEqual(8, GetColumnNumber(2, 2));
-            Assert.AreEqual(0, GetColumnNumber(3, 0));
-            Assert.AreEqual(3, GetColumnNumber(4, 0));
-            Assert.AreEqual(8, GetColumnNumber(8, 8));
+            Assert.AreEqual(0, GetRowNumber(0, 0));
+            Assert.AreEqual(1, GetRowNumber(0, 1));
+            Assert.AreEqual(2, GetRowNumber(0, 8));
+            Assert.AreEqual(3, GetRowNumber(1, 0));
+            Assert.AreEqual(6, GetRowNumber(2, 0));
+            Assert.AreEqual(8, GetRowNumber(2, 2));
+            Assert.AreEqual(0, GetRowNumber(3, 0));
+            Assert.AreEqual(3, GetRowNumber(4, 0));
+            Assert.AreEqual(8, GetRowNumber(8, 8));
         }
 
         [TestMethod]
         public void GetRowNumber_Tests()
         {
-            Assert.AreEqual(0, GetRowNumber(0, 0));
-            Assert.AreEqual(0, GetRowNumber(0, 1));
-            Assert.AreEqual(2, GetRowNumber(0, 8));
-            Assert.AreEqual(0, GetRowNumber(1, 0));
-            Assert.AreEqual(0, GetRowNumber(2, 0));
-            Assert.AreEqual(0, GetRowNumber(2, 2));
-            Assert.AreEqual(3, GetRowNumber(3, 0));
-            Assert.AreEqual(3, GetRowNumber(4, 0));
-            Assert.AreEqual(8, GetRowNumber(8, 8));
+            Assert.AreEqual(0, GetColumnNumber(0, 0));
+            Assert.AreEqual(0, GetColumnNumber(0, 1));
+            Assert.AreEqual(2, GetColumnNumber(0, 8));
+            Assert.AreEqual(0, GetColumnNumber(1, 0));
+            Assert.AreEqual(0, GetColumnNumber(2, 0));
+            Assert.AreEqual(0, GetColumnNumber(2, 2));
+            Assert.AreEqual(3, GetColumnNumber(3, 0));
+            Assert.AreEqual(3, GetColumnNumber(4, 0));
+            Assert.AreEqual(8, GetColumnNumber(8, 8));
         }
     }
 }

@@ -32,14 +32,15 @@ namespace SudokuSolver
         {
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.hintsChk = new System.Windows.Forms.CheckBox();
             this.BruteForceBtn = new System.Windows.Forms.Button();
-            this.OneStepBtn = new System.Windows.Forms.Button();
+            this.SingleBtn = new System.Windows.Forms.Button();
             this.LoadBtn = new System.Windows.Forms.Button();
             this.SaveBtn = new System.Windows.Forms.Button();
             this.FillRandomBtn = new System.Windows.Forms.Button();
             this.ClearBtn = new System.Windows.Forms.Button();
             this.mainMatrix = new System.Windows.Forms.TableLayoutPanel();
-            this.hintsChk = new System.Windows.Forms.CheckBox();
+            this.HiddenSinBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -63,9 +64,10 @@ namespace SudokuSolver
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.HiddenSinBtn);
             this.splitContainer1.Panel1.Controls.Add(this.hintsChk);
             this.splitContainer1.Panel1.Controls.Add(this.BruteForceBtn);
-            this.splitContainer1.Panel1.Controls.Add(this.OneStepBtn);
+            this.splitContainer1.Panel1.Controls.Add(this.SingleBtn);
             this.splitContainer1.Panel1.Controls.Add(this.LoadBtn);
             this.splitContainer1.Panel1.Controls.Add(this.SaveBtn);
             this.splitContainer1.Panel1.Controls.Add(this.FillRandomBtn);
@@ -79,6 +81,17 @@ namespace SudokuSolver
             this.splitContainer1.SplitterDistance = 213;
             this.splitContainer1.TabIndex = 2;
             // 
+            // hintsChk
+            // 
+            this.hintsChk.AutoSize = true;
+            this.hintsChk.Location = new System.Drawing.Point(53, 617);
+            this.hintsChk.Name = "hintsChk";
+            this.hintsChk.Size = new System.Drawing.Size(78, 17);
+            this.hintsChk.TabIndex = 3;
+            this.hintsChk.Text = "Show hints";
+            this.hintsChk.UseVisualStyleBackColor = true;
+            this.hintsChk.CheckedChanged += new System.EventHandler(this.hintsChk_CheckedChanged);
+            // 
             // BruteForceBtn
             // 
             this.BruteForceBtn.Location = new System.Drawing.Point(12, 384);
@@ -89,15 +102,15 @@ namespace SudokuSolver
             this.BruteForceBtn.UseVisualStyleBackColor = true;
             this.BruteForceBtn.Click += new System.EventHandler(this.BruteForceBtn_Click);
             // 
-            // OneStepBtn
+            // SingleBtn
             // 
-            this.OneStepBtn.Location = new System.Drawing.Point(12, 168);
-            this.OneStepBtn.Name = "OneStepBtn";
-            this.OneStepBtn.Size = new System.Drawing.Size(187, 23);
-            this.OneStepBtn.TabIndex = 2;
-            this.OneStepBtn.Text = "Solve - one step";
-            this.OneStepBtn.UseVisualStyleBackColor = true;
-            this.OneStepBtn.Click += new System.EventHandler(this.OneStepBtn_Click);
+            this.SingleBtn.Location = new System.Drawing.Point(12, 168);
+            this.SingleBtn.Name = "SingleBtn";
+            this.SingleBtn.Size = new System.Drawing.Size(187, 23);
+            this.SingleBtn.TabIndex = 2;
+            this.SingleBtn.Text = "Singles - one pass";
+            this.SingleBtn.UseVisualStyleBackColor = true;
+            this.SingleBtn.Click += new System.EventHandler(this.OneStepBtn_Click);
             // 
             // LoadBtn
             // 
@@ -172,16 +185,15 @@ namespace SudokuSolver
             this.mainMatrix.Size = new System.Drawing.Size(700, 676);
             this.mainMatrix.TabIndex = 0;
             // 
-            // hintsChk
+            // HiddenSinBtn
             // 
-            this.hintsChk.AutoSize = true;
-            this.hintsChk.Location = new System.Drawing.Point(53, 617);
-            this.hintsChk.Name = "hintsChk";
-            this.hintsChk.Size = new System.Drawing.Size(78, 17);
-            this.hintsChk.TabIndex = 3;
-            this.hintsChk.Text = "Show hints";
-            this.hintsChk.UseVisualStyleBackColor = true;
-            this.hintsChk.CheckedChanged += new System.EventHandler(this.hintsChk_CheckedChanged);
+            this.HiddenSinBtn.Location = new System.Drawing.Point(12, 207);
+            this.HiddenSinBtn.Name = "HiddenSinBtn";
+            this.HiddenSinBtn.Size = new System.Drawing.Size(187, 23);
+            this.HiddenSinBtn.TabIndex = 4;
+            this.HiddenSinBtn.Text = "Hidden singles - one pass";
+            this.HiddenSinBtn.UseVisualStyleBackColor = true;
+            this.HiddenSinBtn.Click += new System.EventHandler(this.HiddenSinBtn_Click);
             // 
             // SudokuMainForm
             // 
@@ -212,9 +224,10 @@ namespace SudokuSolver
         private System.Windows.Forms.Button FillRandomBtn;
         private System.Windows.Forms.Button ClearBtn;
         private System.Windows.Forms.TableLayoutPanel mainMatrix;
-        private System.Windows.Forms.Button OneStepBtn;
+        private System.Windows.Forms.Button SingleBtn;
         private System.Windows.Forms.Button BruteForceBtn;
         private System.Windows.Forms.CheckBox hintsChk;
+        private System.Windows.Forms.Button HiddenSinBtn;
     }
 }
 

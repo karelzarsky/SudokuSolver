@@ -12,40 +12,37 @@ namespace SudokuLogicTests
         public BoardTests()
         {
             SolvedSample = new Board();
-            SolvedSample.SetSolution(new byte[,]
-                {
-                    {6, 9, 8, 5, 3, 2, 1, 4, 7},
-                    {7, 1, 5, 6, 8, 4, 9, 2, 3},
-                    {3, 4, 2, 1, 7, 9, 8, 6, 5},
-                    {4, 8, 6, 7, 2, 3, 5, 9, 1},
-                    {9, 2, 1, 4, 5, 8, 3, 7, 6},
-                    {5, 3, 7, 9, 6, 1, 2, 8, 4},
-                    {2, 5, 4, 8, 1, 7, 6, 3, 9},
-                    {8, 6, 9, 3, 4, 5, 7, 1, 2},
-                    {1, 7, 3, 2, 9, 6, 4, 5, 8}
-                }
-            );
+            SolvedSample.FillFromString(
+                "698532147" +
+                "715684923" +
+                "342179865" +
+                "486723591" +
+                "921458376" +
+                "537961284" +
+                "254817639" +
+                "869345712" +
+                "173296458");
         }
 
         [TestMethod]
         public void Box_Extraction()
         {
-            Assert.IsTrue(Enumerable.SequenceEqual(new byte[] { 6, 9, 8, 7, 1, 5, 3, 4, 2 }, SolvedSample.GetBox(0)));
-            Assert.IsTrue(Enumerable.SequenceEqual(new byte[] { 6, 3, 9, 7, 1, 2, 4, 5, 8 }, SolvedSample.GetBox(8)));
+            Assert.IsTrue(Enumerable.SequenceEqual(new byte[] { 6, 9, 8, 7, 1, 5, 3, 4, 2 }, SolvedSample.GetSolutionBox(0)));
+            Assert.IsTrue(Enumerable.SequenceEqual(new byte[] { 6, 3, 9, 7, 1, 2, 4, 5, 8 }, SolvedSample.GetSolutionBox(8)));
+        }
+
+        [TestMethod]
+        public void Column_Extraction()
+        {
+            Assert.IsTrue(Enumerable.SequenceEqual(new byte[] { 6, 9, 8, 5, 3, 2, 1, 4, 7 }, SolvedSample.GetSolutionColumn(0)));
+            Assert.IsTrue(Enumerable.SequenceEqual(new byte[] { 1, 7, 3, 2, 9, 6, 4, 5, 8 }, SolvedSample.GetSolutionColumn(8)));
         }
 
         [TestMethod]
         public void Row_Extraction()
         {
-            Assert.IsTrue(Enumerable.SequenceEqual(new byte[] { 6, 9, 8, 5, 3, 2, 1, 4, 7 }, SolvedSample.GetRow(0)));
-            Assert.IsTrue(Enumerable.SequenceEqual(new byte[] { 1, 7, 3, 2, 9, 6, 4, 5, 8 }, SolvedSample.GetRow(8)));
-        }
-
-        [TestMethod]
-        public void Col_Extraction()
-        {
-            Assert.IsTrue(Enumerable.SequenceEqual(new byte[] { 6, 7, 3, 4, 9, 5, 2, 8, 1 }, SolvedSample.GetCol(0)));
-            Assert.IsTrue(Enumerable.SequenceEqual(new byte[] { 7, 3, 5, 1, 6, 4, 9, 2, 8 }, SolvedSample.GetCol(8)));
+            Assert.IsTrue(Enumerable.SequenceEqual(new byte[] { 6, 7, 3, 4, 9, 5, 2, 8, 1 }, SolvedSample.GetSolutionRow(0)));
+            Assert.IsTrue(Enumerable.SequenceEqual(new byte[] { 7, 3, 5, 1, 6, 4, 9, 2, 8 }, SolvedSample.GetSolutionRow(8)));
         }
 
         [TestMethod]

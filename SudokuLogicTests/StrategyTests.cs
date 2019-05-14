@@ -22,9 +22,9 @@ namespace SudokuLogicTests
 
             for (int i = 0; i < 9; i++)
             {
-                Assert.IsTrue(b.possibilities[i, row, filledNumber]);
-                Assert.IsTrue(b.possibilities[col, i, filledNumber]);
-                Assert.IsTrue(b.possibilities[GetColumnNumber(box, i), GetRowNumber(box, i), filledNumber]);
+                Assert.IsTrue(b.Possibilities[i, row, filledNumber]);
+                Assert.IsTrue(b.Possibilities[col, i, filledNumber]);
+                Assert.IsTrue(b.Possibilities[GetRowNumber(box, i), GetColumnNumber(box, i), filledNumber]);
             }
 
             //Act
@@ -34,12 +34,12 @@ namespace SudokuLogicTests
             Assert.AreEqual(21, removedCount);
             for (int i = 0; i < 9; i++)
             {
-                Assert.IsFalse(b.possibilities[i, row, filledNumber]);
-                Assert.IsFalse(b.possibilities[col, i, filledNumber]);
-                Assert.IsFalse(b.possibilities[GetColumnNumber(box, i), GetRowNumber(box, i), filledNumber]);
+                Assert.IsFalse(b.Possibilities[i, row, filledNumber]);
+                Assert.IsFalse(b.Possibilities[col, i, filledNumber]);
+                Assert.IsFalse(b.Possibilities[GetRowNumber(box, i), GetColumnNumber(box, i), filledNumber]);
             }
-            Assert.IsTrue(b.possibilities[8, 8, filledNumber]);
-            Assert.IsTrue(b.possibilities[3, 3, filledNumber]);
+            Assert.IsTrue(b.Possibilities[8, 8, filledNumber]);
+            Assert.IsTrue(b.Possibilities[3, 3, filledNumber]);
         }
     }
 }

@@ -187,7 +187,7 @@ namespace SudokuSolver
                     Cells[i, j].Controls[1].Visible = true;
                     for (int k = 0; k < 9; k++)
                     {
-                        Cells[i, j].Controls[1].Controls[k].Text = board.possibilities[i, j, k + 1] ? (k + 1).ToString() : "";
+                        Cells[i, j].Controls[1].Controls[k].Text = board.Possibilities[i, j, k + 1] ? (k + 1).ToString() : "";
                     }
                 }
                 else
@@ -255,6 +255,12 @@ namespace SudokuSolver
 
         private void hintsChk_CheckedChanged(object sender, EventArgs e)
         {
+            RefreshBoard();
+        }
+
+        private void HiddenSinBtn_Click(object sender, EventArgs e)
+        {
+            Strategies.FindHiddenSingles(board);
             RefreshBoard();
         }
     }
