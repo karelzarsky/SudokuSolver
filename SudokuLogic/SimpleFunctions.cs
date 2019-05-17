@@ -37,13 +37,13 @@ namespace SudokuLogic
         /// </summary>
         /// <param name="box"></param>
         /// <param name="index"></param>
-        public static int GetRowNumber(int box, int index) => (box % 3 * 3) + (index % 3);
+        public static int GetColNumber(int box, int index) => (box % 3 * 3) + (index % 3);
 
         /// <summary>
         /// Calculate global board column number from box number and cell index inside box
         /// </summary>
         /// <param name="box"></param>
         /// <param name="index"></param>
-        public static int GetColumnNumber(int box, int index) => (box / 3 * 3) + (index / 3);
+        public static int GetRowNumber(int box, int index) => (box / 3 * 3) + (index / 3);
     }
 }

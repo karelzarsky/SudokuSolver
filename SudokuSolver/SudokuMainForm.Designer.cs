@@ -32,6 +32,10 @@ namespace SudokuSolver
         {
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.IntersectionsBtn = new System.Windows.Forms.Button();
+            this.HiddenSinBtn = new System.Windows.Forms.Button();
             this.hintsChk = new System.Windows.Forms.CheckBox();
             this.BruteForceBtn = new System.Windows.Forms.Button();
             this.SingleBtn = new System.Windows.Forms.Button();
@@ -40,7 +44,7 @@ namespace SudokuSolver
             this.FillRandomBtn = new System.Windows.Forms.Button();
             this.ClearBtn = new System.Windows.Forms.Button();
             this.mainMatrix = new System.Windows.Forms.TableLayoutPanel();
-            this.HiddenSinBtn = new System.Windows.Forms.Button();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -64,6 +68,10 @@ namespace SudokuSolver
             // 
             // splitContainer1.Panel1
             // 
+            this.splitContainer1.Panel1.Controls.Add(this.label3);
+            this.splitContainer1.Panel1.Controls.Add(this.label2);
+            this.splitContainer1.Panel1.Controls.Add(this.label1);
+            this.splitContainer1.Panel1.Controls.Add(this.IntersectionsBtn);
             this.splitContainer1.Panel1.Controls.Add(this.HiddenSinBtn);
             this.splitContainer1.Panel1.Controls.Add(this.hintsChk);
             this.splitContainer1.Panel1.Controls.Add(this.BruteForceBtn);
@@ -81,33 +89,73 @@ namespace SudokuSolver
             this.splitContainer1.SplitterDistance = 213;
             this.splitContainer1.TabIndex = 2;
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(33, 338);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(145, 26);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "Human-like strategies do only\r\none board sweep each click.";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(31, 205);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(148, 104);
+            this.label1.TabIndex = 6;
+            this.label1.Text = "Keyboard \r\nNumbers 1-9 enters number.\r\nNumber 0 clear the cell.\r\n\r\nMouse\r\nClick i" +
+    "n the cell to select.\r\nClick on the hint to fill number.\r\n\r\n";
+            // 
+            // IntersectionsBtn
+            // 
+            this.IntersectionsBtn.Location = new System.Drawing.Point(12, 466);
+            this.IntersectionsBtn.Name = "IntersectionsBtn";
+            this.IntersectionsBtn.Size = new System.Drawing.Size(187, 23);
+            this.IntersectionsBtn.TabIndex = 7;
+            this.IntersectionsBtn.Text = "Eliminate Intersections - one pass";
+            this.IntersectionsBtn.UseVisualStyleBackColor = true;
+            this.IntersectionsBtn.Click += new System.EventHandler(this.IntersectionsBtn_Click);
+            // 
+            // HiddenSinBtn
+            // 
+            this.HiddenSinBtn.Location = new System.Drawing.Point(12, 420);
+            this.HiddenSinBtn.Name = "HiddenSinBtn";
+            this.HiddenSinBtn.Size = new System.Drawing.Size(187, 23);
+            this.HiddenSinBtn.TabIndex = 6;
+            this.HiddenSinBtn.Text = "Hidden singles - one pass";
+            this.HiddenSinBtn.UseVisualStyleBackColor = true;
+            this.HiddenSinBtn.Click += new System.EventHandler(this.HiddenSinBtn_Click);
+            // 
             // hintsChk
             // 
             this.hintsChk.AutoSize = true;
-            this.hintsChk.Location = new System.Drawing.Point(53, 617);
+            this.hintsChk.Location = new System.Drawing.Point(66, 166);
             this.hintsChk.Name = "hintsChk";
             this.hintsChk.Size = new System.Drawing.Size(78, 17);
-            this.hintsChk.TabIndex = 3;
+            this.hintsChk.TabIndex = 4;
             this.hintsChk.Text = "Show hints";
             this.hintsChk.UseVisualStyleBackColor = true;
             this.hintsChk.CheckedChanged += new System.EventHandler(this.hintsChk_CheckedChanged);
             // 
             // BruteForceBtn
             // 
-            this.BruteForceBtn.Location = new System.Drawing.Point(12, 384);
+            this.BruteForceBtn.Location = new System.Drawing.Point(12, 611);
             this.BruteForceBtn.Name = "BruteForceBtn";
             this.BruteForceBtn.Size = new System.Drawing.Size(187, 23);
-            this.BruteForceBtn.TabIndex = 2;
+            this.BruteForceBtn.TabIndex = 8;
             this.BruteForceBtn.Text = "Brute force";
             this.BruteForceBtn.UseVisualStyleBackColor = true;
             this.BruteForceBtn.Click += new System.EventHandler(this.BruteForceBtn_Click);
             // 
             // SingleBtn
             // 
-            this.SingleBtn.Location = new System.Drawing.Point(12, 168);
+            this.SingleBtn.Location = new System.Drawing.Point(12, 377);
             this.SingleBtn.Name = "SingleBtn";
             this.SingleBtn.Size = new System.Drawing.Size(187, 23);
-            this.SingleBtn.TabIndex = 2;
+            this.SingleBtn.TabIndex = 5;
             this.SingleBtn.Text = "Singles - one pass";
             this.SingleBtn.UseVisualStyleBackColor = true;
             this.SingleBtn.Click += new System.EventHandler(this.OneStepBtn_Click);
@@ -117,7 +165,7 @@ namespace SudokuSolver
             this.LoadBtn.Location = new System.Drawing.Point(12, 126);
             this.LoadBtn.Name = "LoadBtn";
             this.LoadBtn.Size = new System.Drawing.Size(187, 23);
-            this.LoadBtn.TabIndex = 1;
+            this.LoadBtn.TabIndex = 3;
             this.LoadBtn.Text = "Load";
             this.LoadBtn.UseVisualStyleBackColor = true;
             this.LoadBtn.Click += new System.EventHandler(this.LoadBtn_Click);
@@ -127,7 +175,7 @@ namespace SudokuSolver
             this.SaveBtn.Location = new System.Drawing.Point(12, 88);
             this.SaveBtn.Name = "SaveBtn";
             this.SaveBtn.Size = new System.Drawing.Size(187, 23);
-            this.SaveBtn.TabIndex = 1;
+            this.SaveBtn.TabIndex = 2;
             this.SaveBtn.Text = "Save";
             this.SaveBtn.UseVisualStyleBackColor = true;
             this.SaveBtn.Click += new System.EventHandler(this.SaveBtn_Click);
@@ -185,15 +233,15 @@ namespace SudokuSolver
             this.mainMatrix.Size = new System.Drawing.Size(700, 676);
             this.mainMatrix.TabIndex = 0;
             // 
-            // HiddenSinBtn
+            // label3
             // 
-            this.HiddenSinBtn.Location = new System.Drawing.Point(12, 207);
-            this.HiddenSinBtn.Name = "HiddenSinBtn";
-            this.HiddenSinBtn.Size = new System.Drawing.Size(187, 23);
-            this.HiddenSinBtn.TabIndex = 4;
-            this.HiddenSinBtn.Text = "Hidden singles - one pass";
-            this.HiddenSinBtn.UseVisualStyleBackColor = true;
-            this.HiddenSinBtn.Click += new System.EventHandler(this.HiddenSinBtn_Click);
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(33, 565);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(153, 26);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "This computer-like strategy test\r\nall options at once.";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // SudokuMainForm
             // 
@@ -228,6 +276,10 @@ namespace SudokuSolver
         private System.Windows.Forms.Button BruteForceBtn;
         private System.Windows.Forms.CheckBox hintsChk;
         private System.Windows.Forms.Button HiddenSinBtn;
+        private System.Windows.Forms.Button IntersectionsBtn;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label3;
     }
 }
 

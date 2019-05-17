@@ -37,9 +37,9 @@ namespace SudokuLogic
                                 removedCounter++;
                             }
 
-                            if (b.Possibilities[GetRowNumber(boxNum, k), GetColumnNumber(boxNum, k), num])
+                            if (b.Possibilities[GetColNumber(boxNum, k), GetRowNumber(boxNum, k), num])
                             {
-                                b.Possibilities[GetRowNumber(boxNum, k), GetColumnNumber(boxNum, k), num] = false;
+                                b.Possibilities[GetColNumber(boxNum, k), GetRowNumber(boxNum, k), num] = false;
                                 removedCounter++;
                             }
                         }
@@ -148,11 +148,79 @@ namespace SudokuLogic
                     if (boxPossibilities.Count(x => x) == 1)
                     {
                         int indexOfSingle = boxPossibilities.FindIndex(x => x);
-                        b.TrySetNumber(GetColumnNumber(i, indexOfSingle), GetRowNumber(i, indexOfSingle), num, Source.Solver);
+                        b.TrySetNumber(GetRowNumber(i, indexOfSingle), GetColNumber(i, indexOfSingle), num, Source.Solver);
                     }
                 }
             }
             return solvedCounter;
+        }
+
+        public static int EliminateIntersections(Board b)
+        {
+            int eliminatedCounter = 0;
+            BasicPossibilitiesReduction(b);
+            for (int group = 0; group < 9; group++)
+            {
+                for (byte num = 1; num < 10; num++)
+                {
+                    var boxCandidatesInRow = new int[3];
+                    for (int r = 0; r < 3; r++)
+                    {
+                        boxCandidatesInRow[r] = Enumerable.Range(r * 3, 3).Count(x => b.Possibilities[GetColNumber(group, x), GetRowNumber(group, x), num]);
+                    }
+                    var sortedCounts = boxCandidatesInRow.ToList().OrderBy(x => x).ToArray();
+                    if (sortedCounts[0] == 0 && sortedCounts[1] == 0 && sortedCounts[2] > 0)
+                    {
+                        var intersectionRow = Array.IndexOf(boxCandidatesInRow, sortedCounts[2]) + GetRowNumber(group, 0);
+                        for (int c = 0; c < 9; c++)
+                        {
+                            if (GetBoxNumber(c, intersectionRow) != @group && b.Possibilities[c, intersectionRow, num])
+                            {
+                                eliminatedCounter++;
+                                b.Possibilities[c, intersectionRow, num] = false;
+                            }
+                        }
+                    }
+
+                    var boxCandidatesInCol = new int[3];
+                    for (int c = 0; c < 3; c++)
+                    {
+                        boxCandidatesInCol[c] = Enumerable.Range(0, 3).Count(x => b.Possibilities[GetColNumber(group, x), GetRowNumber(group, x), num]);
+                    }
+                    var sortedCountsInCol = boxCandidatesInCol.ToList().OrderBy(x => x).ToArray();
+                    if (sortedCountsInCol[0] == 0 && sortedCountsInCol[1] == 0 && sortedCountsInCol[2] > 0)
+                    {
+                        var IntersectionCol= Array.IndexOf(boxCandidatesInCol, sortedCountsInCol[2]) + GetColNumber(group, 0);
+                        for (int r = 0; r < 9; r++)
+                        {
+                            if (GetBoxNumber(IntersectionCol, r) != group)
+                            {
+                                if (b.Possibilities[IntersectionCol, r, num])
+                                {
+                                    eliminatedCounter++;
+                                    b.Possibilities[IntersectionCol, r, num] = false;
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+            return eliminatedCounter;
+        }
+
+        private static int RemovePossibilitiesInRow(Board b, int r, byte num)
+        {
+            int removed = 0;
+            for (int c = 0; c < 9; c++)
+            {
+                if (b.Possibilities[c, r, num])
+                {
+                    b.Possibilities[c, r, num] = false;
+                    removed++;
+                }
+            }
+            return removed;
         }
     }
 }

@@ -24,7 +24,7 @@ namespace SudokuLogicTests
             {
                 Assert.IsTrue(b.Possibilities[i, row, filledNumber]);
                 Assert.IsTrue(b.Possibilities[col, i, filledNumber]);
-                Assert.IsTrue(b.Possibilities[GetRowNumber(box, i), GetColumnNumber(box, i), filledNumber]);
+                Assert.IsTrue(b.Possibilities[GetColNumber(box, i), GetRowNumber(box, i), filledNumber]);
             }
 
             //Act
@@ -36,7 +36,7 @@ namespace SudokuLogicTests
             {
                 Assert.IsFalse(b.Possibilities[i, row, filledNumber]);
                 Assert.IsFalse(b.Possibilities[col, i, filledNumber]);
-                Assert.IsFalse(b.Possibilities[GetRowNumber(box, i), GetColumnNumber(box, i), filledNumber]);
+                Assert.IsFalse(b.Possibilities[GetColNumber(box, i), GetRowNumber(box, i), filledNumber]);
             }
             Assert.IsTrue(b.Possibilities[8, 8, filledNumber]);
             Assert.IsTrue(b.Possibilities[3, 3, filledNumber]);

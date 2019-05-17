@@ -263,5 +263,11 @@ namespace SudokuSolver
             Strategies.FindHiddenSingles(board);
             RefreshBoard();
         }
+
+        private void IntersectionsBtn_Click(object sender, EventArgs e)
+        {
+            Strategies.EliminateIntersections(board);
+            RefreshBoard();
+        }
     }
 }

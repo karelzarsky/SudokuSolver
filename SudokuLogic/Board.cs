@@ -27,7 +27,7 @@ namespace SudokuLogic
             Enumerable.Range(0, Solution.GetLength(1)).Select(x => Solution[colNumber, x]);
 
         public IEnumerable<byte> GetSolutionBox(int boxNr) =>
-            Enumerable.Range(0, 9).Select(i => Solution[GetColumnNumber(boxNr, i), GetRowNumber(boxNr, i)]);
+            Enumerable.Range(0, 9).Select(i => Solution[GetRowNumber(boxNr, i), GetColNumber(boxNr, i)]);
 
         public IEnumerable<bool> GetPossibilitiesRow(int rowNumber, byte number) =>
             Enumerable.Range(0, Possibilities.GetLength(0)).Select(x => Possibilities[x, rowNumber, number]);
@@ -36,7 +36,7 @@ namespace SudokuLogic
             Enumerable.Range(0, Possibilities.GetLength(1)).Select(x => Possibilities[colNumber, x, number]);
 
         public IEnumerable<bool> GetBoxPossibilities(int boxNr, byte number) =>
-            Enumerable.Range(0, 9).Select(i => Possibilities[GetColumnNumber(boxNr, i), GetRowNumber(boxNr, i), number]);
+            Enumerable.Range(0, 9).Select(i => Possibilities[GetRowNumber(boxNr, i), GetColNumber(boxNr, i), number]);
 
         public bool IsSolutionSolved()
         {
