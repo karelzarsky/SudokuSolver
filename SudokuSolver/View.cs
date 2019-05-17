@@ -8,16 +8,14 @@ using System.Windows.Forms;
 
 namespace SudokuSolver
 {
-    public partial class SudokuMainForm : Form
+    public partial class View : Form
     {
-        private Panel[,] Cells = new Panel[9, 9];
-        private Board board = new Board();
-        private TableLayoutPanelCellPosition selected;
+        private ViewModel vm = new ViewModel();
 
-        public SudokuMainForm()
+        public View()
         {
             InitializeComponent();
-            board.FillRandomCells(30);
+            vm.FillRandomCells(30);
             CreateBoard();
             KeyPreview = true;
             KeyDown += OnKeyDown;
@@ -33,32 +31,32 @@ namespace SudokuSolver
 
             if (byte.TryParse(keyChar, out byte number))
             {
-                if (board.TrySetNumber(selected.Column, selected.Row, number, Source.Keyboard))
+                if (vm.TrySetNumber(vm.Selected.Column, vm.Selected.Row, number, Source.Keyboard))
                 {
                     RefreshBoard();
                     SelectNext();
                 }
                 else
                 {
-                    Cells[selected.Column, selected.Row].BackColor = Color.Red;
-                    Cells[selected.Column, selected.Row].Refresh();
+                    vm.Cells[vm.Selected.Column, vm.Selected.Row].BackColor = Color.Red;
+                    vm.Cells[vm.Selected.Column, vm.Selected.Row].Refresh();
                     SystemSounds.Asterisk.Play();
                     Thread.Sleep(100);
-                    Cells[selected.Column, selected.Row].BackColor = Color.White;
-                    Cells[selected.Column, selected.Row].Refresh();
+                    vm.Cells[vm.Selected.Column, vm.Selected.Row].BackColor = Color.White;
+                    vm.Cells[vm.Selected.Column, vm.Selected.Row].Refresh();
                 }
             }
         }
 
         private void SelectNext()
         {
-            if (selected.Column == 8)
+            if (vm.Selected.Column == 8)
             {
-                SelectCell(new TableLayoutPanelCellPosition(0, selected.Row == 8 ? 0 : selected.Row + 1));
+                SelectCell(new TableLayoutPanelCellPosition(0, vm.Selected.Row == 8 ? 0 : vm.Selected.Row + 1));
             }
             else
             {
-                SelectCell(new TableLayoutPanelCellPosition(selected.Column + 1, selected.Row));
+                SelectCell(new TableLayoutPanelCellPosition(vm.Selected.Column + 1, vm.Selected.Row));
             }
         }
 
@@ -73,7 +71,7 @@ namespace SudokuSolver
             {
                 for (int j = 0; j < 9; j++)
                 {
-                    var cellPnl = Cells[i, j] = new Panel
+                    var cellPnl = vm.Cells[i, j] = new Panel
                     {
                         Dock = DockStyle.Fill,
                         BackColor = GetCellColor(i, j),
@@ -82,7 +80,7 @@ namespace SudokuSolver
                     var bigNumberLbl = new Label
                     {
                         Dock = DockStyle.Fill,
-                        Text = board.GetNumberAsString(i, j),
+                        Text = vm.GetNumberAsString(i, j),
                         TextAlign = ContentAlignment.MiddleCenter,
                         Visible = false,
                     };
@@ -124,7 +122,7 @@ namespace SudokuSolver
             var pos = mainMatrix.GetCellPosition(pnl.Parent);
             if (num != 0)
             {
-                board.TrySetNumber(pos.Column, pos.Row, num, Source.Keyboard);
+                vm.TrySetNumber(pos.Column, pos.Row, num, Source.Keyboard);
                 RefreshBoard();
             }
             if (pos.Column != -1)
@@ -148,26 +146,26 @@ namespace SudokuSolver
 
         private void SelectCell(TableLayoutPanelCellPosition pos)
         {
-            Cells[selected.Column, selected.Row].BackColor = GetCellColor(selected.Column, selected.Row);
-            selected = pos;
-            Cells[selected.Column, selected.Row].BackColor = Color.White;
+            vm.Cells[vm.Selected.Column, vm.Selected.Row].BackColor = GetCellColor(vm.Selected.Column, vm.Selected.Row);
+            vm.Selected = pos;
+            vm.Cells[vm.Selected.Column, vm.Selected.Row].BackColor = Color.White;
         }
 
         private void ClearBtn_Click(object sender, EventArgs e)
         {
-            board.Clear();
+            vm.Clear();
             RefreshBoard();
         }
 
         private void FillRandomBtn_Click(object sender, EventArgs e)
         {
-            board.FillRandomCells(5);
+            vm.FillRandomCells(5);
             RefreshBoard();
         }
 
         private void RefreshBoard()
         {
-            Strategies.BasicPossibilitiesReduction(board);
+            vm.BasicPossibilitiesReduction();
             for (int i = 0; i < 9; i++)
             {
                 for (int j = 0; j < 9; j++)
@@ -177,29 +175,29 @@ namespace SudokuSolver
             }
         }
 
-        private void RefreshCell(int i, int j)
+        private void RefreshCell(int col, int row)
         {
-            if (board.CellEmpty(i, j))
+            if (vm.CellEmpty(col, row))
             {
-                Cells[i, j].Controls[0].Visible = false;
+                vm.Cells[col, row].Controls[0].Visible = false;
                 if (hintsChk.Checked)
                 {
-                    Cells[i, j].Controls[1].Visible = true;
-                    for (int k = 0; k < 9; k++)
+                    vm.Cells[col, row].Controls[1].Visible = true;
+                    for (int num = 1; num < 10; num++)
                     {
-                        Cells[i, j].Controls[1].Controls[k].Text = board.Possibilities[i, j, k + 1] ? (k + 1).ToString() : "";
+                        vm.Cells[col, row].Controls[1].Controls[num - 1].Text = vm.HintText(col, row, num);
                     }
                 }
                 else
                 {
-                    Cells[i, j].Controls[1].Visible = false;
+                    vm.Cells[col, row].Controls[1].Visible = false;
                 }
             }
             else
             {
-                Cells[i, j].Controls[0].Text = board.GetNumberAsString(i, j);
-                Cells[i, j].Controls[1].Visible = false;
-                Cells[i, j].Controls[0].Visible = true;
+                vm.Cells[col, row].Controls[0].Text = vm.GetNumberAsString(col, row);
+                vm.Cells[col, row].Controls[1].Visible = false;
+                vm.Cells[col, row].Controls[0].Visible = true;
             }
         }
 
@@ -213,7 +211,7 @@ namespace SudokuSolver
             {
                 if (fileDialog.ShowDialog() == DialogResult.OK)
                 {
-                    File.WriteAllText(fileDialog.FileName, board.ToString());
+                    File.WriteAllText(fileDialog.FileName, vm.ToString());
                 }
             }
         }
@@ -232,7 +230,7 @@ namespace SudokuSolver
                     {
                         using (StreamReader reader = new StreamReader(fileStream))
                         {
-                            board.FillFromString(reader.ReadToEnd());
+                            vm.FillFromString(reader.ReadToEnd());
                         }
                     }
                     RefreshBoard();
@@ -242,14 +240,14 @@ namespace SudokuSolver
 
         private void OneStepBtn_Click(object sender, EventArgs e)
         {
-            Strategies.BasicPossibilitiesReduction(board);
-            Strategies.CheckForSolvedCells(board);
+            vm.BasicPossibilitiesReduction();
+            vm.CheckForSolvedCells();
             RefreshBoard();
         }
 
         private void BruteForceBtn_Click(object sender, EventArgs e)
         {
-            var solutions = Strategies.BruteForce(board);
+            vm.BruteForce();
             RefreshBoard();
         }
 
@@ -260,13 +258,13 @@ namespace SudokuSolver
 
         private void HiddenSinBtn_Click(object sender, EventArgs e)
         {
-            Strategies.FindHiddenSingles(board);
+            vm.FindHiddenSingles();
             RefreshBoard();
         }
 
         private void IntersectionsBtn_Click(object sender, EventArgs e)
         {
-            Strategies.EliminateIntersections(board);
+            vm.EliminateIntersections();
             RefreshBoard();
         }
     }

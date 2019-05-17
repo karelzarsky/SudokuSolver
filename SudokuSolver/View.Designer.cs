@@ -2,7 +2,7 @@
 
 namespace SudokuSolver
 {
-    partial class SudokuMainForm
+    partial class View
     {
         /// <summary>
         /// Required designer variable.
@@ -186,7 +186,7 @@ namespace SudokuSolver
             this.FillRandomBtn.Name = "FillRandomBtn";
             this.FillRandomBtn.Size = new System.Drawing.Size(187, 23);
             this.FillRandomBtn.TabIndex = 1;
-            this.FillRandomBtn.Text = "Fill 5 cells randomly";
+            this.FillRandomBtn.Text = "Fill 5 Cells randomly";
             this.FillRandomBtn.UseVisualStyleBackColor = true;
             this.FillRandomBtn.Click += new System.EventHandler(this.FillRandomBtn_Click);
             // 
@@ -243,14 +243,14 @@ namespace SudokuSolver
             this.label3.Text = "This computer-like strategy test\r\nall options at once.";
             this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // SudokuMainForm
+            // View
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(917, 698);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.statusStrip1);
-            this.Name = "SudokuMainForm";
+            this.Name = "View";
             this.Text = "Sudoku solver";
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();

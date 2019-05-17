@@ -41,14 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SudokuMainForm.cs">
+    <Compile Include="View.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SudokuMainForm.Designer.cs">
-      <DependentUpon>SudokuMainForm.cs</DependentUpon>
+    <Compile Include="View.Designer.cs">
+      <DependentUpon>View.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -58,8 +59,8 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="SudokuMainForm.resx">
-      <DependentUpon>SudokuMainForm.cs</DependentUpon>
+    <EmbeddedResource Include="View.resx">
+      <DependentUpon>View.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
