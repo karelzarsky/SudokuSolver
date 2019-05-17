@@ -32,6 +32,7 @@ namespace SudokuSolver
         {
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
+            this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.IntersectionsBtn = new System.Windows.Forms.Button();
@@ -44,7 +45,8 @@ namespace SudokuSolver
             this.FillRandomBtn = new System.Windows.Forms.Button();
             this.ClearBtn = new System.Windows.Forms.Button();
             this.mainMatrix = new System.Windows.Forms.TableLayoutPanel();
-            this.label3 = new System.Windows.Forms.Label();
+            this.StatusLabel = new System.Windows.Forms.ToolStripStatusLabel();
+            this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -53,6 +55,8 @@ namespace SudokuSolver
             // 
             // statusStrip1
             // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.StatusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 676);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(917, 22);
@@ -88,6 +92,16 @@ namespace SudokuSolver
             this.splitContainer1.Size = new System.Drawing.Size(917, 676);
             this.splitContainer1.SplitterDistance = 213;
             this.splitContainer1.TabIndex = 2;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(33, 565);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(153, 26);
+            this.label3.TabIndex = 9;
+            this.label3.Text = "This computer-like strategy test\r\nall options at once.";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // label2
             // 
@@ -233,15 +247,10 @@ namespace SudokuSolver
             this.mainMatrix.Size = new System.Drawing.Size(700, 676);
             this.mainMatrix.TabIndex = 0;
             // 
-            // label3
+            // StatusLabel
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(33, 565);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(153, 26);
-            this.label3.TabIndex = 9;
-            this.label3.Text = "This computer-like strategy test\r\nall options at once.";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.StatusLabel.Name = "StatusLabel";
+            this.StatusLabel.Size = new System.Drawing.Size(118, 17);
             // 
             // View
             // 
@@ -252,6 +261,8 @@ namespace SudokuSolver
             this.Controls.Add(this.statusStrip1);
             this.Name = "View";
             this.Text = "Sudoku solver";
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
@@ -280,6 +291,7 @@ namespace SudokuSolver
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.ToolStripStatusLabel StatusLabel;
     }
 }
 

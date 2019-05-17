@@ -33,11 +33,15 @@ namespace SudokuSolver
             {
                 if (vm.TrySetNumber(vm.Selected.Column, vm.Selected.Row, number, Source.Keyboard))
                 {
+                    StatusLabel.Text = number == 0
+                        ? $"Cleared cell {vm.Selected.Column},{vm.Selected.Row}."
+                        : $"Filled number {number} at {vm.Selected.Column},{vm.Selected.Row}.";
                     RefreshBoard();
                     SelectNext();
                 }
                 else
                 {
+                    StatusLabel.Text = $"Cannot enter number {number} at {vm.Selected.Column},{vm.Selected.Row}.";
                     vm.Cells[vm.Selected.Column, vm.Selected.Row].BackColor = Color.Red;
                     vm.Cells[vm.Selected.Column, vm.Selected.Row].Refresh();
                     SystemSounds.Asterisk.Play();
@@ -48,17 +52,9 @@ namespace SudokuSolver
             }
         }
 
-        private void SelectNext()
-        {
-            if (vm.Selected.Column == 8)
-            {
-                SelectCell(new TableLayoutPanelCellPosition(0, vm.Selected.Row == 8 ? 0 : vm.Selected.Row + 1));
-            }
-            else
-            {
-                SelectCell(new TableLayoutPanelCellPosition(vm.Selected.Column + 1, vm.Selected.Row));
-            }
-        }
+        private void SelectNext() =>
+            SelectCell(new TableLayoutPanelCellPosition( (vm.Selected.Column + 1) % 9,
+                vm.Selected.Column != 8 ? vm.Selected.Row : (vm.Selected.Row + 1) % 9));
 
         private Color GetCellColor(int i, int j) =>
             ((i / 3) + (j / 3)) % 2 == 0
@@ -67,27 +63,27 @@ namespace SudokuSolver
 
         private void CreateBoard()
         {
-            for (int i = 0; i < 9; i++)
+            for (int col = 0; col < 9; col++)
             {
-                for (int j = 0; j < 9; j++)
+                for (int row = 0; row < 9; row++)
                 {
-                    var cellPnl = vm.Cells[i, j] = new Panel
+                    var cellPnl = vm.Cells[col, row] = new Panel
                     {
                         Dock = DockStyle.Fill,
-                        BackColor = GetCellColor(i, j),
+                        BackColor = GetCellColor(col, row),
                         Margin = new Padding(5),
                     };
                     var bigNumberLbl = new Label
                     {
                         Dock = DockStyle.Fill,
-                        Text = vm.GetNumberAsString(i, j),
+                        Text = vm.GetNumberAsString(col, row),
                         TextAlign = ContentAlignment.MiddleCenter,
                         Visible = false,
                     };
                     var hintPanel = CreateHintPanel();
                     bigNumberLbl.Click += NumberClick;
                     cellPnl.Click += PnlClick;
-                    mainMatrix.Controls.Add(cellPnl, i, j);
+                    mainMatrix.Controls.Add(cellPnl, col, row);
                     cellPnl.Controls.Add(bigNumberLbl);
                     cellPnl.Controls.Add(hintPanel);
                 }
@@ -122,7 +118,14 @@ namespace SudokuSolver
             var pos = mainMatrix.GetCellPosition(pnl.Parent);
             if (num != 0)
             {
-                vm.TrySetNumber(pos.Column, pos.Row, num, Source.Keyboard);
+                if (vm.TrySetNumber(pos.Column, pos.Row, num, Source.Keyboard))
+                {
+                    StatusLabel.Text = $"Filled number {num} at {pos.Column},{pos.Row}.";
+                }
+                else
+                {
+                    StatusLabel.Text = $"Cannot enter number {num} at {pos.Column},{pos.Row}.";
+                }
                 RefreshBoard();
             }
             if (pos.Column != -1)
@@ -155,22 +158,23 @@ namespace SudokuSolver
         {
             vm.Clear();
             RefreshBoard();
+            StatusLabel.Text = "Board was cleared.";
         }
 
         private void FillRandomBtn_Click(object sender, EventArgs e)
         {
-            vm.FillRandomCells(5);
             RefreshBoard();
+            StatusLabel.Text = $"{vm.FillRandomCells(5)} cells were filled randomly.";
         }
 
         private void RefreshBoard()
         {
             vm.BasicPossibilitiesReduction();
-            for (int i = 0; i < 9; i++)
+            for (int col = 0; col < 9; col++)
             {
-                for (int j = 0; j < 9; j++)
+                for (int row = 0; row < 9; row++)
                 {
-                    RefreshCell(i, j);
+                    RefreshCell(col, row);
                 }
             }
         }
@@ -179,25 +183,25 @@ namespace SudokuSolver
         {
             if (vm.CellEmpty(col, row))
             {
-                vm.Cells[col, row].Controls[0].Visible = false;
+                vm.BigNumberLabel(col, row).Visible = false;
                 if (hintsChk.Checked)
                 {
-                    vm.Cells[col, row].Controls[1].Visible = true;
+                    vm.HintPanel(col, row).Visible = true;
                     for (int num = 1; num < 10; num++)
                     {
-                        vm.Cells[col, row].Controls[1].Controls[num - 1].Text = vm.HintText(col, row, num);
+                        vm.HintPanel(col, row).Controls[num - 1].Text = vm.HintText(col, row, num);
                     }
                 }
                 else
                 {
-                    vm.Cells[col, row].Controls[1].Visible = false;
+                    vm.HintPanel(col, row).Visible = false;
                 }
             }
             else
             {
-                vm.Cells[col, row].Controls[0].Text = vm.GetNumberAsString(col, row);
-                vm.Cells[col, row].Controls[1].Visible = false;
-                vm.Cells[col, row].Controls[0].Visible = true;
+                vm.BigNumberLabel(col, row).Text = vm.GetNumberAsString(col, row);
+                vm.BigNumberLabel(col, row).Visible = true;
+                vm.HintPanel(col, row).Visible = false;
             }
         }
 
@@ -212,6 +216,7 @@ namespace SudokuSolver
                 if (fileDialog.ShowDialog() == DialogResult.OK)
                 {
                     File.WriteAllText(fileDialog.FileName, vm.ToString());
+                    StatusLabel.Text = $"Sudoku was saved to file {fileDialog.FileName}.";
                 }
             }
         }
@@ -231,6 +236,7 @@ namespace SudokuSolver
                         using (StreamReader reader = new StreamReader(fileStream))
                         {
                             vm.FillFromString(reader.ReadToEnd());
+                            StatusLabel.Text = $"Sudoku loaded from file {openFileDialog.FileName}.";
                         }
                     }
                     RefreshBoard();
@@ -241,30 +247,34 @@ namespace SudokuSolver
         private void OneStepBtn_Click(object sender, EventArgs e)
         {
             vm.BasicPossibilitiesReduction();
-            vm.CheckForSolvedCells();
+            StatusLabel.Text = $"{vm.CheckForSolvedCells()} cells had one last possibility and was filled.";
             RefreshBoard();
         }
 
         private void BruteForceBtn_Click(object sender, EventArgs e)
         {
             vm.BruteForce();
+            StatusLabel.Text = (vm.Solved)
+                ? "Solution found using brute force method."
+                : "This sudoku has no solution.";
             RefreshBoard();
         }
 
         private void hintsChk_CheckedChanged(object sender, EventArgs e)
         {
+            StatusLabel.Text = "Hints are now " + (hintsChk.Checked ? "shown." : "hidden.");
             RefreshBoard();
         }
 
         private void HiddenSinBtn_Click(object sender, EventArgs e)
         {
-            vm.FindHiddenSingles();
+            StatusLabel.Text = $"Found {vm.FindHiddenSingles()} hidden singles.";
             RefreshBoard();
         }
 
         private void IntersectionsBtn_Click(object sender, EventArgs e)
         {
-            vm.EliminateIntersections();
+            StatusLabel.Text = $"Eliminated {vm.EliminateIntersections()} possibilities using intersections rules.";
             RefreshBoard();
         }
     }

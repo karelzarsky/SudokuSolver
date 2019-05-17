@@ -70,8 +70,9 @@ namespace SudokuLogic
                         Possibilities[c, r, num] = true;
         }
 
-        public void FillRandomCells(int count)
+        public int FillRandomCells(int count)
         {
+            int filledCounter = 0;
             Random rnd = new Random();
             for (int i = 0; i < count; i++)
             {
@@ -82,9 +83,13 @@ namespace SudokuLogic
                     if (Solution[col, row] != 0)
                         continue;
                     if (TrySetNumber(col, row, (byte) (rnd.Next(9) + 1), Source.Random))
+                    {
+                        filledCounter++;
                         break;
+                    }
                 }
             }
+            return filledCounter;
         }
 
         public override string ToString()

@@ -136,19 +136,22 @@ namespace SudokuLogic
                     if (colPossibilities.Count(x => x) == 1)
                     {
                         int indexOfSingle = colPossibilities.FindIndex(x => x);
-                        b.TrySetNumber(i, indexOfSingle, num, Source.Solver);
+                        if (b.TrySetNumber(i, indexOfSingle, num, Source.Solver))
+                            solvedCounter++;
                     }
                     var rowPossibilities = b.GetPossibilitiesRow(i, num).ToList();
                     if (rowPossibilities.Count(x => x) == 1)
                     {
                         int indexOfSingle = rowPossibilities.FindIndex(x => x);
-                        b.TrySetNumber(indexOfSingle, i, num, Source.Solver);
+                        if (b.TrySetNumber(indexOfSingle, i, num, Source.Solver))
+                            solvedCounter++;
                     }
                     var boxPossibilities = b.GetBoxPossibilities(i, num).ToList();
                     if (boxPossibilities.Count(x => x) == 1)
                     {
                         int indexOfSingle = boxPossibilities.FindIndex(x => x);
-                        b.TrySetNumber(GetRowNumber(i, indexOfSingle), GetColNumber(i, indexOfSingle), num, Source.Solver);
+                        if (b.TrySetNumber(GetRowNumber(i, indexOfSingle), GetColNumber(i, indexOfSingle), num, Source.Solver))
+                            solvedCounter++;
                     }
                 }
             }
