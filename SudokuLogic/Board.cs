@@ -13,7 +13,7 @@ namespace SudokuLogic
     {
         public byte[,] Solution = new byte[9, 9]; // indexes [column, row]
         public bool[,,] Possibilities = new bool[9, 9, 10]; // False means coordinates I, J cannot be filled with number K
-        public Source[,] Sources = new Source[9,9];
+        public Origin[,] Origins = new Origin[9,9]; // Where that numbers come from
 
         public Board()
         {
@@ -38,7 +38,7 @@ namespace SudokuLogic
         public IEnumerable<bool> GetBoxPossibilities(int boxNr, byte number) =>
             Enumerable.Range(0, 9).Select(i => Possibilities[GetRowNumber(boxNr, i), GetColNumber(boxNr, i), number]);
 
-        public bool IsSolutionSolved()
+        public bool IsSolved()
         {
             for (int i = 0; i < 9; i++)
             {
@@ -49,7 +49,7 @@ namespace SudokuLogic
             return true;
         }
 
-        public bool IsSolutionValid()
+        public bool IsValid()
         {
             for (int i = 0; i < 9; i++)
             {
@@ -70,6 +70,13 @@ namespace SudokuLogic
                         Possibilities[c, r, num] = true;
         }
 
+        /// <summary>
+        /// Fills ramdom cells with ramdom number.
+        /// Numbers will not collide with other in column, row and box.
+        /// Board can be insolvable.
+        /// </summary>
+        /// <param name="count">Number of cell to fill</param>
+        /// <returns>Number of really filled cells. Can be lower than requested if no valid numbers are found.</returns>
         public int FillRandomCells(int count)
         {
             int filledCounter = 0;
@@ -82,7 +89,7 @@ namespace SudokuLogic
                     int row = rnd.Next(9);
                     if (Solution[col, row] != 0)
                         continue;
-                    if (TrySetNumber(col, row, (byte) (rnd.Next(9) + 1), Source.Random))
+                    if (TrySetNumber(col, row, (byte) (rnd.Next(9) + 1), Origin.Random))
                     {
                         filledCounter++;
                         break;
@@ -116,7 +123,7 @@ namespace SudokuLogic
                 {
                     byte.TryParse(content[characterCounter++].ToString(), out Solution[c, r]);
                     if (Solution[c, r] > 0)
-                        Sources[c, r] = Source.File;
+                        Origins[c, r] = Origin.File;
                 }
             }
             FillAllPossibilitiesTrue();
@@ -129,7 +136,7 @@ namespace SudokuLogic
                 for (int r = 0; r < 9; r++)
                 {
                     Solution[c, r] = 0;
-                    Sources[c, r] = Source.Empty;
+                    Origins[c, r] = Origin.Empty;
                 }
             }
             FillAllPossibilitiesTrue();
@@ -147,15 +154,15 @@ namespace SudokuLogic
         /// <param name="col">Column</param>
         /// <param name="row">Row</param>
         /// <param name="value">number to be entered</param>
-        /// <param name="s">source</param>
+        /// <param name="o">origin</param>
         /// <returns>True for success. False for invalid entry.</returns>
-        public bool TrySetNumber(int col, int row, byte value, Source s)
+        public bool TrySetNumber(int col, int row, byte value, Origin o)
         {
             byte oldValue = Solution[col, row];
             Solution[col, row] = value;
-            if (IsSolutionValid())
+            if (IsValid())
             {
-                Sources[col, row] = s;
+                Origins[col, row] = o;
                 return true;
             }
             Solution[col, row] = oldValue;

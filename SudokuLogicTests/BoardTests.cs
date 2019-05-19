@@ -48,7 +48,7 @@ namespace SudokuLogicTests
         [TestMethod]
         public void SolutionValid_Correct()
         {
-            Assert.IsTrue(SolvedSample.IsSolutionValid());
+            Assert.IsTrue(SolvedSample.IsValid());
         }
 
         [TestMethod]
@@ -67,7 +67,7 @@ namespace SudokuLogicTests
                 {8, 6, 9, 3, 4, 5, 7, 1, 2},
                 {1, 7, 3, 2, 9, 6, 4, 5, 8}
             });
-            Assert.IsFalse(board.IsSolutionValid());
+            Assert.IsFalse(board.IsValid());
         }
 
         [TestMethod]
@@ -87,13 +87,13 @@ namespace SudokuLogicTests
                     {1, 7, 3, 2, 9, 6, 4, 5, 8}
                 });
 
-            Assert.IsTrue(board.IsSolutionValid());
+            Assert.IsTrue(board.IsValid());
         }
 
         [TestMethod]
         public void SolutionSolved_Correct()
         {
-            Assert.IsTrue(SolvedSample.IsSolutionSolved());
+            Assert.IsTrue(SolvedSample.IsSolved());
         }
 
         [TestMethod]
@@ -113,7 +113,7 @@ namespace SudokuLogicTests
                 {1, 7, 3, 2, 9, 6, 4, 5, 8}
             });
 
-            Assert.IsFalse(board.IsSolutionSolved());
+            Assert.IsFalse(board.IsSolved());
         }
 
         [TestMethod]
@@ -133,7 +133,7 @@ namespace SudokuLogicTests
                 {1, 7, 3, 2, 9, 6, 4, 5, 8}
             });
 
-            Assert.IsFalse(board.IsSolutionSolved());
+            Assert.IsFalse(board.IsSolved());
         }
 
         [TestMethod]
@@ -153,7 +153,7 @@ namespace SudokuLogicTests
                 {1, 7, 3, 2, 9, 6, 4, 5, 8}
             });
 
-            Assert.IsFalse(board.IsSolutionSolved());
+            Assert.IsFalse(board.IsSolved());
         }
 
         [TestMethod]
@@ -173,7 +173,7 @@ namespace SudokuLogicTests
                 {1, 7, 3, 2, 9, 6, 4, 5, 8}
             });
 
-            Assert.IsFalse(board.IsSolutionSolved());
+            Assert.IsFalse(board.IsSolved());
         }
     }
 }

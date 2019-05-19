@@ -1,12 +1,13 @@
 ﻿namespace SudokuLogic
 {
-    public enum Source : byte
+    public enum Origin : byte
     {
         Empty,
         File,
-        Keyboard,
+        Human,
         Random,
-        Solver,
+        SolverFresh,
+        SolverOld,
         BruteForce
     }
 }

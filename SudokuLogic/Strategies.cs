@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using static SudokuLogic.SimpleFunctions;
 
 namespace SudokuLogic
@@ -69,7 +67,7 @@ namespace SudokuLogic
                         }
 
                         if (!b.TrySetNumber(c, r,
-                            (byte)Enumerable.Range(1, 9).First(number => b.Possibilities[c, r, number]), Source.Solver))
+                            (byte)Enumerable.Range(1, 9).First(number => b.Possibilities[c, r, number]), Origin.SolverFresh))
                         {
                             throw new ArgumentException();
                         }
@@ -81,7 +79,41 @@ namespace SudokuLogic
             return solvedCounter;
         }
 
-        public static int BruteForce(Board b)
+        /// <summary>
+        /// Recursively tries all combinations until first solution is found.
+        /// </summary>
+        /// <returns>True if there is a solution</returns>
+        public static bool BruteForceOneSolution(Board b)
+        {
+            var EmptyCell = GetEmptyCell(b);
+            if (EmptyCell.Item1 == -1)
+            {
+                return true;
+            }
+            for (byte num = 1; num < 10; num++)
+            {
+                if (!b.Possibilities[EmptyCell.Item1, EmptyCell.Item2, num]) continue;
+                if (b.TrySetNumber(EmptyCell.Item1, EmptyCell.Item2, num, Origin.BruteForce))
+                {
+                    if (BruteForceOneSolution(b))
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        b.Solution[EmptyCell.Item1, EmptyCell.Item2] = 0;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Recursively tries all combinations.
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns>Number of solutions</returns>
+        public static int BruteForceAllSolutions(Board b)
         {
             var EmptyCell = GetEmptyCell(b);
             if (EmptyCell.Item1 == -1)
@@ -93,9 +125,9 @@ namespace SudokuLogic
             for (byte num = 1; num < 10; num++)
             {
                 if (!b.Possibilities[EmptyCell.Item1, EmptyCell.Item2, num]) continue;
-                if (b.TrySetNumber(EmptyCell.Item1, EmptyCell.Item2, num, Source.BruteForce))
+                if (b.TrySetNumber(EmptyCell.Item1, EmptyCell.Item2, num, Origin.BruteForce))
                 {
-                    int found = BruteForce(b);
+                    int found = BruteForceAllSolutions(b);
                     if (found > 0)
                     {
                         solutions += found;
@@ -109,6 +141,11 @@ namespace SudokuLogic
             return solutions;
         }
 
+        /// <summary>
+        /// Search for first empty cell
+        /// </summary>
+        /// <param name="b"></param>
+        /// <returns>Coordinates of empty cell</returns>
         private static Tuple<int, int> GetEmptyCell(Board b)
         {
             for (int c = 0; c < 9; c++)
@@ -124,6 +161,10 @@ namespace SudokuLogic
             return new Tuple<int, int>(-1, -1);
         }
 
+        /// <summary>
+        /// Search for last remaining possibility in each column, row and box
+        /// </summary>
+        /// <param name="b"></param>
         public static int FindHiddenSingles(Board b)
         {
             int solvedCounter = 0;
@@ -136,21 +177,21 @@ namespace SudokuLogic
                     if (colPossibilities.Count(x => x) == 1)
                     {
                         int indexOfSingle = colPossibilities.FindIndex(x => x);
-                        if (b.TrySetNumber(i, indexOfSingle, num, Source.Solver))
+                        if (b.TrySetNumber(i, indexOfSingle, num, Origin.SolverFresh))
                             solvedCounter++;
                     }
                     var rowPossibilities = b.GetPossibilitiesRow(i, num).ToList();
                     if (rowPossibilities.Count(x => x) == 1)
                     {
                         int indexOfSingle = rowPossibilities.FindIndex(x => x);
-                        if (b.TrySetNumber(indexOfSingle, i, num, Source.Solver))
+                        if (b.TrySetNumber(indexOfSingle, i, num, Origin.SolverFresh))
                             solvedCounter++;
                     }
                     var boxPossibilities = b.GetBoxPossibilities(i, num).ToList();
                     if (boxPossibilities.Count(x => x) == 1)
                     {
                         int indexOfSingle = boxPossibilities.FindIndex(x => x);
-                        if (b.TrySetNumber(GetRowNumber(i, indexOfSingle), GetColNumber(i, indexOfSingle), num, Source.Solver))
+                        if (b.TrySetNumber(GetRowNumber(i, indexOfSingle), GetColNumber(i, indexOfSingle), num, Origin.SolverFresh))
                             solvedCounter++;
                     }
                 }
@@ -158,6 +199,11 @@ namespace SudokuLogic
             return solvedCounter;
         }
 
+        /// <summary>
+        /// If any one number occurs twice or three times in just one unit (any row, column or box)
+        /// then we can remove that number from the intersection of another unit.
+        /// </summary>
+        /// <param name="b"></param>
         public static int EliminateIntersections(Board b)
         {
             int eliminatedCounter = 0;

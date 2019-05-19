@@ -15,7 +15,7 @@ namespace SudokuSolver
         public View()
         {
             InitializeComponent();
-            vm.FillRandomCells(30);
+            vm.FillRandomCells(20);
             CreateBoard();
             KeyPreview = true;
             KeyDown += OnKeyDown;
@@ -31,7 +31,7 @@ namespace SudokuSolver
 
             if (byte.TryParse(keyChar, out byte number))
             {
-                if (vm.TrySetNumber(vm.Selected.Column, vm.Selected.Row, number, Source.Keyboard))
+                if (vm.TrySetNumber(vm.Selected.Column, vm.Selected.Row, number, Origin.Human))
                 {
                     StatusLabel.Text = number == 0
                         ? $"Cleared cell {vm.Selected.Column},{vm.Selected.Row}."
@@ -56,8 +56,8 @@ namespace SudokuSolver
             SelectCell(new TableLayoutPanelCellPosition( (vm.Selected.Column + 1) % 9,
                 vm.Selected.Column != 8 ? vm.Selected.Row : (vm.Selected.Row + 1) % 9));
 
-        private Color GetCellColor(int i, int j) =>
-            ((i / 3) + (j / 3)) % 2 == 0
+        private Color GetCellBgColor(int i, int j) =>
+            (i / 3 + j / 3) % 2 == 0
                 ? Color.DarkGray
                 : Color.BurlyWood;
 
@@ -67,25 +67,13 @@ namespace SudokuSolver
             {
                 for (int row = 0; row < 9; row++)
                 {
-                    var cellPnl = vm.Cells[col, row] = new Panel
-                    {
-                        Dock = DockStyle.Fill,
-                        BackColor = GetCellColor(col, row),
-                        Margin = new Padding(5),
-                    };
-                    var bigNumberLbl = new Label
-                    {
-                        Dock = DockStyle.Fill,
-                        Text = vm.GetNumberAsString(col, row),
-                        TextAlign = ContentAlignment.MiddleCenter,
-                        Visible = false,
-                    };
-                    var hintPanel = CreateHintPanel();
+                    var cellPnl = vm.Cells[col, row] = new Panel { Dock = DockStyle.Fill, BackColor = GetCellBgColor(col, row), Margin = new Padding(5), };
+                    var bigNumberLbl = new Label { Dock = DockStyle.Fill, Text = vm.GetNumberAsString(col, row), TextAlign = ContentAlignment.MiddleCenter, Visible = false, };
                     bigNumberLbl.Click += NumberClick;
                     cellPnl.Click += PnlClick;
                     mainMatrix.Controls.Add(cellPnl, col, row);
                     cellPnl.Controls.Add(bigNumberLbl);
-                    cellPnl.Controls.Add(hintPanel);
+                    cellPnl.Controls.Add(CreateHintPanel());
                 }
             }
             RefreshBoard();
@@ -118,14 +106,9 @@ namespace SudokuSolver
             var pos = mainMatrix.GetCellPosition(pnl.Parent);
             if (num != 0)
             {
-                if (vm.TrySetNumber(pos.Column, pos.Row, num, Source.Keyboard))
-                {
-                    StatusLabel.Text = $"Filled number {num} at {pos.Column},{pos.Row}.";
-                }
-                else
-                {
-                    StatusLabel.Text = $"Cannot enter number {num} at {pos.Column},{pos.Row}.";
-                }
+                StatusLabel.Text = vm.TrySetNumber(pos.Column, pos.Row, num, Origin.Human)
+                    ? $"Filled number {num} at {pos.Column},{pos.Row}."
+                    : $"Cannot enter number {num} at {pos.Column},{pos.Row}.";
                 RefreshBoard();
             }
             if (pos.Column != -1)
@@ -149,7 +132,7 @@ namespace SudokuSolver
 
         private void SelectCell(TableLayoutPanelCellPosition pos)
         {
-            vm.Cells[vm.Selected.Column, vm.Selected.Row].BackColor = GetCellColor(vm.Selected.Column, vm.Selected.Row);
+            vm.Cells[vm.Selected.Column, vm.Selected.Row].BackColor = GetCellBgColor(vm.Selected.Column, vm.Selected.Row);
             vm.Selected = pos;
             vm.Cells[vm.Selected.Column, vm.Selected.Row].BackColor = Color.White;
         }
@@ -199,6 +182,7 @@ namespace SudokuSolver
             }
             else
             {
+                vm.BigNumberLabel(col, row).ForeColor = vm.GetForeColor(col, row);
                 vm.BigNumberLabel(col, row).Text = vm.GetNumberAsString(col, row);
                 vm.BigNumberLabel(col, row).Visible = true;
                 vm.HintPanel(col, row).Visible = false;
@@ -246,6 +230,7 @@ namespace SudokuSolver
 
         private void OneStepBtn_Click(object sender, EventArgs e)
         {
+            vm.ColorChangeFreshToOld();
             vm.BasicPossibilitiesReduction();
             StatusLabel.Text = $"{vm.CheckForSolvedCells()} cells had one last possibility and was filled.";
             RefreshBoard();
@@ -253,14 +238,14 @@ namespace SudokuSolver
 
         private void BruteForceBtn_Click(object sender, EventArgs e)
         {
-            vm.BruteForce();
-            StatusLabel.Text = (vm.Solved)
+            vm.ColorChangeFreshToOld();
+            StatusLabel.Text = vm.BruteForce()
                 ? "Solution found using brute force method."
                 : "This sudoku has no solution.";
             RefreshBoard();
         }
 
-        private void hintsChk_CheckedChanged(object sender, EventArgs e)
+        private void HintsChk_CheckedChanged(object sender, EventArgs e)
         {
             StatusLabel.Text = "Hints are now " + (hintsChk.Checked ? "shown." : "hidden.");
             RefreshBoard();
@@ -268,12 +253,14 @@ namespace SudokuSolver
 
         private void HiddenSinBtn_Click(object sender, EventArgs e)
         {
+            vm.ColorChangeFreshToOld();
             StatusLabel.Text = $"Found {vm.FindHiddenSingles()} hidden singles.";
             RefreshBoard();
         }
 
         private void IntersectionsBtn_Click(object sender, EventArgs e)
         {
+            vm.ColorChangeFreshToOld();
             StatusLabel.Text = $"Eliminated {vm.EliminateIntersections()} possibilities using intersections rules.";
             RefreshBoard();
         }
