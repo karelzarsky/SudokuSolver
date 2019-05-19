@@ -1,5 +1,6 @@
 ﻿using SudokuLogic;
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Media;
@@ -11,11 +12,12 @@ namespace SudokuSolver
     public partial class View : Form
     {
         private ViewModel vm = new ViewModel();
+        AlertForm alert;
 
         public View()
         {
             InitializeComponent();
-            vm.FillRandomCells(20);
+            vm.FillRandomCells(25);
             CreateBoard();
             KeyPreview = true;
             KeyDown += OnKeyDown;
@@ -257,12 +259,18 @@ namespace SudokuSolver
             RefreshBoard();
         }
 
-        private void BruteForceBtn_Click(object sender, EventArgs e)
+        private async void BruteForceBtn_Click(object sender, EventArgs e)
         {
             vm.ColorChangeFreshToOld();
-            StatusLabel.Text = vm.BruteForce()
-                ? "Solution found using brute force method."
-                : "This sudoku has no solution.";
+            alert = new AlertForm();
+            alert.Show();
+            alert.Text = "Searching complete.";
+            alert.OK_Btn.Visible = true;
+            var stopwatch = new Stopwatch();
+            stopwatch.Start();
+            StatusLabel.Text = alert.labelMessage.Text = await vm.BruteForce()
+                ? $"Solution found using brute force method.\r\nTime elapsed : {stopwatch.ElapsedMilliseconds} ms."
+                : $"This sudoku has no solution.\r\nTime elapsed : {stopwatch.ElapsedMilliseconds} ms.";
             RefreshBoard();
         }
 

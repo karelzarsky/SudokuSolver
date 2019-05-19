@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SudokuLogic
@@ -39,7 +40,16 @@ namespace SudokuLogic
 
         internal int CheckForSolvedCells() => Strategies.CheckForSolvedCells(model);
 
-        internal bool BruteForce() => Strategies.BruteForceOneSolution(model);
+        internal Task<bool> BruteForce()
+        {
+            Strategies.BasicPossibilitiesReduction(model);
+            var tcs = new TaskCompletionSource<bool>();
+            Task.Run(() =>
+            {
+                tcs.SetResult(Strategies.BruteForceOneSolution(model));
+            });
+            return tcs.Task;
+        }
 
         internal int FindHiddenSingles() => Strategies.FindHiddenSingles(model);
 
