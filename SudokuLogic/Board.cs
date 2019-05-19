@@ -11,23 +11,23 @@ namespace SudokuLogic
     /// </summary>
     public class Board
     {
-        public byte[,] Solution = new byte[9, 9]; // indexes [column, row]
+        public byte[,] Cells = new byte[9, 9]; // indexes: [column, row]
         public bool[,,] Possibilities = new bool[9, 9, 10]; // False means coordinates I, J cannot be filled with number K
         public Origin[,] Origins = new Origin[9,9]; // Where that numbers come from
 
         public Board()
         {
-            FillAllPossibilitiesTrue();
+            SetAllPossibilitiesTrue();
         }
 
-        public IEnumerable<byte> GetSolutionRow(int rowNumber) =>
-            Enumerable.Range(0, Solution.GetLength(0)).Select(x => Solution[x, rowNumber]);
+        public IEnumerable<byte> GetRow(int rowNumber) =>
+            Enumerable.Range(0, Cells.GetLength(0)).Select(x => Cells[x, rowNumber]);
 
-        public IEnumerable<byte> GetSolutionColumn(int colNumber) =>
-            Enumerable.Range(0, Solution.GetLength(1)).Select(x => Solution[colNumber, x]);
+        public IEnumerable<byte> GetColumn(int colNumber) =>
+            Enumerable.Range(0, Cells.GetLength(1)).Select(x => Cells[colNumber, x]);
 
-        public IEnumerable<byte> GetSolutionBox(int boxNr) =>
-            Enumerable.Range(0, 9).Select(i => Solution[GetRowNumber(boxNr, i), GetColNumber(boxNr, i)]);
+        public IEnumerable<byte> GetBox(int boxNr) =>
+            Enumerable.Range(0, 9).Select(i => Cells[GetRowNumber(boxNr, i), GetColNumber(boxNr, i)]);
 
         public IEnumerable<bool> GetPossibilitiesRow(int rowNumber, byte number) =>
             Enumerable.Range(0, Possibilities.GetLength(0)).Select(x => Possibilities[x, rowNumber, number]);
@@ -42,9 +42,9 @@ namespace SudokuLogic
         {
             for (int i = 0; i < 9; i++)
             {
-                if (!IsGroupSolved(GetSolutionColumn(i))) return false;
-                if (!IsGroupSolved(GetSolutionRow(i))) return false;
-                if (!IsGroupSolved(GetSolutionBox(i))) return false;
+                if (!IsGroupSolved(GetColumn(i))) return false;
+                if (!IsGroupSolved(GetRow(i))) return false;
+                if (!IsGroupSolved(GetBox(i))) return false;
             }
             return true;
         }
@@ -53,16 +53,16 @@ namespace SudokuLogic
         {
             for (int i = 0; i < 9; i++)
             {
-                if (!IsGroupValid(GetSolutionColumn(i))) return false;
-                if (!IsGroupValid(GetSolutionRow(i))) return false;
-                if (!IsGroupValid(GetSolutionBox(i))) return false;
+                if (!IsGroupValid(GetColumn(i))) return false;
+                if (!IsGroupValid(GetRow(i))) return false;
+                if (!IsGroupValid(GetBox(i))) return false;
             }
             return true;
         }
 
-        public bool CellEmpty(int i, int j) => Solution[i, j] == 0;
+        public bool IsCellEmpty(int i, int j) => Cells[i, j] == 0;
 
-        public void FillAllPossibilitiesTrue()
+        public void SetAllPossibilitiesTrue()
         {
             for (int c = 0; c < 9; c++)
                 for (int r = 0; r < 9; r++)
@@ -87,7 +87,7 @@ namespace SudokuLogic
                 {
                     int col = rnd.Next(9);
                     int row = rnd.Next(9);
-                    if (Solution[col, row] != 0)
+                    if (Cells[col, row] != 0)
                         continue;
                     if (TrySetNumber(col, row, (byte) (rnd.Next(9) + 1), Origin.Random))
                     {
@@ -99,6 +99,11 @@ namespace SudokuLogic
             return filledCounter;
         }
 
+        /// <summary>
+        /// Return board as single string.
+        /// Used for saving to file.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             var sb = new StringBuilder();
@@ -106,27 +111,31 @@ namespace SudokuLogic
             {
                 for (int r = 0; r < 9; r++)
                 {
-                    sb.Append(Solution[c, r].ToString());
+                    sb.Append(Cells[c, r].ToString());
                 }
             }
             return sb.ToString();
         }
 
+        /// <summary>
+        /// Fill board from string
+        /// </summary>
+        /// <param name="content"></param>
         public void FillFromString(string content)
         {
-            if (content.Length < 81) return;
+            if (content.Length != 81) return;
             Clear();
             int characterCounter = 0;
             for (int c = 0; c < 9; c++)
             {
                 for (int r = 0; r < 9; r++)
                 {
-                    byte.TryParse(content[characterCounter++].ToString(), out Solution[c, r]);
-                    if (Solution[c, r] > 0)
+                    byte.TryParse(content[characterCounter++].ToString(), out Cells[c, r]);
+                    if (Cells[c, r] > 0)
                         Origins[c, r] = Origin.File;
                 }
             }
-            FillAllPossibilitiesTrue();
+            SetAllPossibilitiesTrue();
         }
 
         public void Clear()
@@ -135,18 +144,18 @@ namespace SudokuLogic
             {
                 for (int r = 0; r < 9; r++)
                 {
-                    Solution[c, r] = 0;
+                    Cells[c, r] = 0;
                     Origins[c, r] = Origin.Empty;
                 }
             }
-            FillAllPossibilitiesTrue();
+            SetAllPossibilitiesTrue();
         }
 
-        public byte GetNumber(int col, int row) => Solution[col, row];
+        public byte GetNumber(int col, int row) => Cells[col, row];
 
-        public string GetNumberAsString(int col, int row) => Solution[col, row] == 0 ? "" : Solution[col, row].ToString();
+        public string GetNumberAsString(int col, int row) => Cells[col, row] == 0 ? "" : Cells[col, row].ToString();
 
-        public void SetSolution(byte[,] v) => Solution = v;
+        public void SetSolution(byte[,] v) => Cells = v;
 
         /// <summary>
         /// Fills number in entered coordinates. Tests for validity.
@@ -158,21 +167,21 @@ namespace SudokuLogic
         /// <returns>True for success. False for invalid entry.</returns>
         public bool TrySetNumber(int col, int row, byte value, Origin o)
         {
-            byte oldValue = Solution[col, row];
-            Solution[col, row] = value;
+            byte oldValue = Cells[col, row];
+            Cells[col, row] = value;
             if (IsValid())
             {
                 Origins[col, row] = o;
                 return true;
             }
-            Solution[col, row] = oldValue;
+            Cells[col, row] = oldValue;
             return false;
         }
 
         public int GetNumberOfFilled()
         {
             int res = 0;
-            foreach (var n in Solution)
+            foreach (var n in Cells)
             {
                 if (n > 0) res++;
             }

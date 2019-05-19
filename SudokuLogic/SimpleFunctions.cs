@@ -15,7 +15,9 @@ namespace SudokuLogic
             && Enumerable.Range(1, 9).All(seekingNumber => group.Count(x => x == seekingNumber) == 1);
 
         /// <summary>
-        /// Check whether group is correct. Some cells can be empty (0).
+        /// Check whether group is correct.
+        /// No number can occur more than once.
+        /// Some cells can be empty (0).
         /// </summary>
         /// <param name="group"></param>
         public static bool IsGroupValid(IEnumerable<byte> group)

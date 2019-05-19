@@ -120,7 +120,7 @@ namespace SudokuSolver
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(148, 104);
             this.label1.TabIndex = 6;
-            this.label1.Text = "Human \r\nNumbers 1-9 enters number.\r\nNumber 0 clear the cell.\r\n\r\nMouse\r\nClick i" +
+            this.label1.Text = "Keyboard \r\nNumbers 1-9 enters number.\r\nNumber 0 clear the cell.\r\n\r\nMouse\r\nClick i" +
     "n the cell to select.\r\nClick on the hint to fill number.\r\n\r\n";
             // 
             // IntersectionsBtn
@@ -172,7 +172,7 @@ namespace SudokuSolver
             this.SingleBtn.TabIndex = 5;
             this.SingleBtn.Text = "Singles - one pass";
             this.SingleBtn.UseVisualStyleBackColor = true;
-            this.SingleBtn.Click += new System.EventHandler(this.OneStepBtn_Click);
+            this.SingleBtn.Click += new System.EventHandler(this.SinglesBtn_Click);
             // 
             // LoadBtn
             // 

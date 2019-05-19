@@ -17,7 +17,7 @@ namespace SudokuLogicTests
             int box = GetBoxNumber(col, row);
 
             var b = new Board();
-            b.FillAllPossibilitiesTrue();
+            b.SetAllPossibilitiesTrue();
             b.TrySetNumber(col, row, filledNumber, Origin.SolverFresh);
 
             for (int i = 0; i < 9; i++)

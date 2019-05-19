@@ -9,7 +9,8 @@ namespace SudokuLogic
         private Board model { get; } = new Board();
         public Panel[,] Cells { get; set; } = new Panel[9, 9];
         public TableLayoutPanelCellPosition Selected { get; set; }
-        Color[] NumberColors;
+
+        private readonly Color[] NumberColors;
 
         public ViewModel()
         {
@@ -28,7 +29,7 @@ namespace SudokuLogic
 
         internal void BasicPossibilitiesReduction() => Strategies.BasicPossibilitiesReduction(model);
 
-        internal bool CellEmpty(int col, int row) => model.CellEmpty(col, row);
+        internal bool CellEmpty(int col, int row) => model.IsCellEmpty(col, row);
 
         internal string HintText(int col, int row, int num) => model.Possibilities[col, row, num] ? num.ToString() : "";
 
@@ -63,9 +64,15 @@ namespace SudokuLogic
         public void ColorChangeFreshToOld()
         {
             for (int c = 0; c < 9; c++)
+            {
                 for (int r = 0; r < 9; r++)
+                {
                     if (model.Origins[c, r] == Origin.SolverFresh)
+                    {
                         model.Origins[c, r] = Origin.SolverOld;
+                    }
+                }
+            }
         }
     }
 }

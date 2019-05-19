@@ -61,7 +61,7 @@ namespace SudokuLogic
                 {
                     if (1 == Enumerable.Range(1, 9).Count(number => b.Possibilities[c, r, number]))
                     {
-                        if (!b.CellEmpty(c, r))
+                        if (!b.IsCellEmpty(c, r))
                         {
                             continue;
                         }
@@ -92,7 +92,11 @@ namespace SudokuLogic
             }
             for (byte num = 1; num < 10; num++)
             {
-                if (!b.Possibilities[EmptyCell.Item1, EmptyCell.Item2, num]) continue;
+                if (!b.Possibilities[EmptyCell.Item1, EmptyCell.Item2, num])
+                {
+                    continue;
+                }
+
                 if (b.TrySetNumber(EmptyCell.Item1, EmptyCell.Item2, num, Origin.BruteForce))
                 {
                     if (BruteForceOneSolution(b))
@@ -101,7 +105,7 @@ namespace SudokuLogic
                     }
                     else
                     {
-                        b.Solution[EmptyCell.Item1, EmptyCell.Item2] = 0;
+                        b.Cells[EmptyCell.Item1, EmptyCell.Item2] = 0;
                     }
                 }
             }
@@ -124,7 +128,11 @@ namespace SudokuLogic
             int solutions = 0;
             for (byte num = 1; num < 10; num++)
             {
-                if (!b.Possibilities[EmptyCell.Item1, EmptyCell.Item2, num]) continue;
+                if (!b.Possibilities[EmptyCell.Item1, EmptyCell.Item2, num])
+                {
+                    continue;
+                }
+
                 if (b.TrySetNumber(EmptyCell.Item1, EmptyCell.Item2, num, Origin.BruteForce))
                 {
                     int found = BruteForceAllSolutions(b);
@@ -134,7 +142,7 @@ namespace SudokuLogic
                     }
                     else
                     {
-                        b.Solution[EmptyCell.Item1, EmptyCell.Item2] = 0;
+                        b.Cells[EmptyCell.Item1, EmptyCell.Item2] = 0;
                     }
                 }
             }
@@ -148,11 +156,11 @@ namespace SudokuLogic
         /// <returns>Coordinates of empty cell</returns>
         private static Tuple<int, int> GetEmptyCell(Board b)
         {
-            for (int c = 0; c < 9; c++)
+            for (int r = 0; r < 9; r++)
             {
-                for (int r = 0; r < 9; r++)
+                for (int c = 0; c < 9; c++)
                 {
-                    if (b.CellEmpty(c, r))
+                    if (b.IsCellEmpty(c, r))
                     {
                         return new Tuple<int, int>(c, r);
                     }
@@ -178,21 +186,27 @@ namespace SudokuLogic
                     {
                         int indexOfSingle = colPossibilities.FindIndex(x => x);
                         if (b.TrySetNumber(i, indexOfSingle, num, Origin.SolverFresh))
+                        {
                             solvedCounter++;
+                        }
                     }
                     var rowPossibilities = b.GetPossibilitiesRow(i, num).ToList();
                     if (rowPossibilities.Count(x => x) == 1)
                     {
                         int indexOfSingle = rowPossibilities.FindIndex(x => x);
                         if (b.TrySetNumber(indexOfSingle, i, num, Origin.SolverFresh))
+                        {
                             solvedCounter++;
+                        }
                     }
                     var boxPossibilities = b.GetBoxPossibilities(i, num).ToList();
                     if (boxPossibilities.Count(x => x) == 1)
                     {
                         int indexOfSingle = boxPossibilities.FindIndex(x => x);
                         if (b.TrySetNumber(GetRowNumber(i, indexOfSingle), GetColNumber(i, indexOfSingle), num, Origin.SolverFresh))
+                        {
                             solvedCounter++;
+                        }
                     }
                 }
             }
@@ -239,7 +253,7 @@ namespace SudokuLogic
                     var sortedCountsInCol = boxCandidatesInCol.ToList().OrderBy(x => x).ToArray();
                     if (sortedCountsInCol[0] == 0 && sortedCountsInCol[1] == 0 && sortedCountsInCol[2] > 0)
                     {
-                        var IntersectionCol= Array.IndexOf(boxCandidatesInCol, sortedCountsInCol[2]) + GetColNumber(group, 0);
+                        var IntersectionCol = Array.IndexOf(boxCandidatesInCol, sortedCountsInCol[2]) + GetColNumber(group, 0);
                         for (int r = 0; r < 9; r++)
                         {
                             if (GetBoxNumber(IntersectionCol, r) != group)
