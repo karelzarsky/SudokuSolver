@@ -8,7 +8,7 @@ namespace SudokuLogic
     internal class ViewModel
     {
         private Board model { get; } = new Board();
-        public Panel[,] Cells { get; set; } = new Panel[9, 9];
+        public Panel[,] Cells { get; set; } = new Panel[Board.Size, Board.Size];
         public TableLayoutPanelCellPosition Selected { get; set; }
 
         private readonly Color[] NumberColors;
@@ -43,12 +43,7 @@ namespace SudokuLogic
         internal Task<bool> BruteForce()
         {
             Strategies.BasicPossibilitiesReduction(model);
-            var tcs = new TaskCompletionSource<bool>();
-            Task.Run(() =>
-            {
-                tcs.SetResult(Strategies.BruteForceOneSolution(model));
-            });
-            return tcs.Task;
+            return Task.Run(() => Strategies.BruteForceOneSolution(model));
         }
 
         internal int FindHiddenSingles() => Strategies.FindHiddenSingles(model);
@@ -73,9 +68,9 @@ namespace SudokuLogic
 
         public void ColorChangeFreshToOld()
         {
-            for (int c = 0; c < 9; c++)
+            for (int c = 0; c < Board.Size; c++)
             {
-                for (int r = 0; r < 9; r++)
+                for (int r = 0; r < Board.Size; r++)
                 {
                     if (model.Origins[c, r] == Origin.SolverFresh)
                     {

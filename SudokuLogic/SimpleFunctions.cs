@@ -11,8 +11,8 @@ namespace SudokuLogic
         /// </summary>
         /// <param name="group"></param>
         public static bool IsGroupSolved(IEnumerable<byte> group) =>
-            group.Count() == 9
-            && Enumerable.Range(1, 9).All(seekingNumber => group.Count(x => x == seekingNumber) == 1);
+            group.Count() == Board.Size
+            && Enumerable.Range(1, Board.Size).All(seekingNumber => group.Count(x => x == seekingNumber) == 1);
 
         /// <summary>
         /// Check whether group is correct.
@@ -22,9 +22,7 @@ namespace SudokuLogic
         /// <param name="group"></param>
         public static bool IsGroupValid(IEnumerable<byte> group)
         {
-            return group.Count() == 9
-                && group.All(x => x < 10)
-                && Enumerable.Range(1, 9).All(seekingNumber => group.Count(x => x == seekingNumber) <= 1);
+            return Enumerable.Range(1, Board.Size).All(seekingNumber => group.Count(x => x == seekingNumber) <= 1);
         }
 
         /// <summary>

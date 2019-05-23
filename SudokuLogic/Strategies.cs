@@ -13,15 +13,15 @@ namespace SudokuLogic
         public static int BasicPossibilitiesReduction(Board b)
         {
             int removedCounter = 0;
-            for (int c = 0; c < 9; c++)
+            for (int c = 0; c < Board.Size; c++)
             {
-                for (int r = 0; r < 9; r++)
+                for (int r = 0; r < Board.Size; r++)
                 {
                     byte num = b.GetNumber(c, r);
                     if (num != 0)
                     {
                         int boxNum = GetBoxNumber(c, r);
-                        for (int k = 0; k < 9; k++)
+                        for (int k = 0; k < Board.Size; k++)
                         {
                             b.Possibilities[c, r, k] = false;
                             if (b.Possibilities[c, k, num])
@@ -55,11 +55,11 @@ namespace SudokuLogic
         public static int CheckForSolvedCells(Board b)
         {
             int solvedCounter = 0;
-            for (int c = 0; c < 9; c++)
+            for (int c = 0; c < Board.Size; c++)
             {
-                for (int r = 0; r < 9; r++)
+                for (int r = 0; r < Board.Size; r++)
                 {
-                    if (1 == Enumerable.Range(1, 9).Count(number => b.Possibilities[c, r, number]))
+                    if (1 == Enumerable.Range(1, Board.Size).Count(number => b.Possibilities[c, r, number]))
                     {
                         if (!b.IsCellEmpty(c, r))
                         {
@@ -67,7 +67,7 @@ namespace SudokuLogic
                         }
 
                         if (!b.TrySetNumber(c, r,
-                            (byte)Enumerable.Range(1, 9).First(number => b.Possibilities[c, r, number]), Origin.SolverFresh))
+                            (byte)Enumerable.Range(1, Board.Size).First(number => b.Possibilities[c, r, number]), Origin.SolverFresh))
                         {
                             throw new ArgumentException();
                         }
@@ -156,9 +156,9 @@ namespace SudokuLogic
         /// <returns>Coordinates of empty cell</returns>
         private static Tuple<int, int> GetEmptyCell(Board b)
         {
-            for (int r = 0; r < 9; r++)
+            for (int r = 0; r < Board.Size; r++)
             {
-                for (int c = 0; c < 9; c++)
+                for (int c = 0; c < Board.Size; c++)
                 {
                     if (b.IsCellEmpty(c, r))
                     {
@@ -177,7 +177,7 @@ namespace SudokuLogic
         {
             int solvedCounter = 0;
             BasicPossibilitiesReduction(b);
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < Board.Size; i++)
             {
                 for (byte num = 1; num < 10; num++)
                 {
@@ -222,7 +222,7 @@ namespace SudokuLogic
         {
             int eliminatedCounter = 0;
             BasicPossibilitiesReduction(b);
-            for (int group = 0; group < 9; group++)
+            for (int group = 0; group < Board.Size; group++)
             {
                 for (byte num = 1; num < 10; num++)
                 {
@@ -235,7 +235,7 @@ namespace SudokuLogic
                     if (sortedCounts[0] == 0 && sortedCounts[1] == 0 && sortedCounts[2] > 0)
                     {
                         var intersectionRow = Array.IndexOf(boxCandidatesInRow, sortedCounts[2]) + GetRowNumber(group, 0);
-                        for (int c = 0; c < 9; c++)
+                        for (int c = 0; c < Board.Size; c++)
                         {
                             if (GetBoxNumber(c, intersectionRow) != @group && b.Possibilities[c, intersectionRow, num])
                             {
@@ -254,7 +254,7 @@ namespace SudokuLogic
                     if (sortedCountsInCol[0] == 0 && sortedCountsInCol[1] == 0 && sortedCountsInCol[2] > 0)
                     {
                         var IntersectionCol = Array.IndexOf(boxCandidatesInCol, sortedCountsInCol[2]) + GetColNumber(group, 0);
-                        for (int r = 0; r < 9; r++)
+                        for (int r = 0; r < Board.Size; r++)
                         {
                             if (GetBoxNumber(IntersectionCol, r) != group)
                             {

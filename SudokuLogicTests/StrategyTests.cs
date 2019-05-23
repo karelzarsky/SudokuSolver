@@ -20,7 +20,7 @@ namespace SudokuLogicTests
             b.SetAllPossibilitiesTrue();
             b.TrySetNumber(col, row, filledNumber, Origin.SolverFresh);
 
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < Board.Size; i++)
             {
                 Assert.IsTrue(b.Possibilities[i, row, filledNumber]);
                 Assert.IsTrue(b.Possibilities[col, i, filledNumber]);
@@ -32,7 +32,7 @@ namespace SudokuLogicTests
 
             //Assert
             Assert.AreEqual(21, removedCount);
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < Board.Size; i++)
             {
                 Assert.IsFalse(b.Possibilities[i, row, filledNumber]);
                 Assert.IsFalse(b.Possibilities[col, i, filledNumber]);

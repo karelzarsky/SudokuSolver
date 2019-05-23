@@ -11,9 +11,10 @@ namespace SudokuLogic
     /// </summary>
     public class Board
     {
-        public byte[,] Cells = new byte[9, 9]; // indexes: [column, row]
-        public bool[,,] Possibilities = new bool[9, 9, 10]; // False means coordinates I, J cannot be filled with number K
-        public Origin[,] Origins = new Origin[9,9]; // Where that numbers come from
+        public const int Size = 9;
+        public byte[,] Cells = new byte[Size, Size]; // indexes: [column, row]
+        public bool[,,] Possibilities = new bool[Size, Size, 10]; // False means coordinates I, J cannot be filled with number K
+        public Origin[,] Origins = new Origin[Size, Size]; // Where that numbers come from
 
         public Board()
         {
@@ -21,26 +22,26 @@ namespace SudokuLogic
         }
 
         public IEnumerable<byte> GetRow(int rowNumber) =>
-            Enumerable.Range(0, Cells.GetLength(0)).Select(x => Cells[x, rowNumber]);
+            Enumerable.Range(0, Size).Select(x => Cells[x, rowNumber]);
 
         public IEnumerable<byte> GetColumn(int colNumber) =>
-            Enumerable.Range(0, Cells.GetLength(1)).Select(x => Cells[colNumber, x]);
+            Enumerable.Range(0, Size).Select(x => Cells[colNumber, x]);
 
         public IEnumerable<byte> GetBox(int boxNr) =>
-            Enumerable.Range(0, 9).Select(i => Cells[GetRowNumber(boxNr, i), GetColNumber(boxNr, i)]);
+            Enumerable.Range(0, Size).Select(i => Cells[GetRowNumber(boxNr, i), GetColNumber(boxNr, i)]);
 
         public IEnumerable<bool> GetPossibilitiesRow(int rowNumber, byte number) =>
-            Enumerable.Range(0, Possibilities.GetLength(0)).Select(x => Possibilities[x, rowNumber, number]);
+            Enumerable.Range(0, Size).Select(x => Possibilities[x, rowNumber, number]);
 
         public IEnumerable<bool> GetPossibilitiesColumn(int colNumber, byte number) =>
-            Enumerable.Range(0, Possibilities.GetLength(1)).Select(x => Possibilities[colNumber, x, number]);
+            Enumerable.Range(0, Size).Select(x => Possibilities[colNumber, x, number]);
 
         public IEnumerable<bool> GetBoxPossibilities(int boxNr, byte number) =>
-            Enumerable.Range(0, 9).Select(i => Possibilities[GetRowNumber(boxNr, i), GetColNumber(boxNr, i), number]);
+            Enumerable.Range(0, Size).Select(i => Possibilities[GetRowNumber(boxNr, i), GetColNumber(boxNr, i), number]);
 
         public bool IsSolved()
         {
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < Size; i++)
             {
                 if (!IsGroupSolved(GetColumn(i))) return false;
                 if (!IsGroupSolved(GetRow(i))) return false;
@@ -51,7 +52,7 @@ namespace SudokuLogic
 
         public bool IsValid()
         {
-            for (int i = 0; i < 9; i++)
+            for (int i = 0; i < Size; i++)
             {
                 if (!IsGroupValid(GetColumn(i))) return false;
                 if (!IsGroupValid(GetRow(i))) return false;
@@ -64,8 +65,8 @@ namespace SudokuLogic
 
         public void SetAllPossibilitiesTrue()
         {
-            for (int c = 0; c < 9; c++)
-                for (int r = 0; r < 9; r++)
+            for (int c = 0; c < Size; c++)
+                for (int r = 0; r < Size; r++)
                     for (int num = 0; num < 10; num++)
                         Possibilities[c, r, num] = true;
         }
@@ -85,8 +86,8 @@ namespace SudokuLogic
             {
                 for (int attempt = 0; attempt < 1000; attempt++)
                 {
-                    int col = rnd.Next(9);
-                    int row = rnd.Next(9);
+                    int col = rnd.Next(Size);
+                    int row = rnd.Next(Size);
                     if (Cells[col, row] != 0)
                         continue;
                     if (TrySetNumber(col, row, (byte) (rnd.Next(9) + 1), Origin.Random))
@@ -107,9 +108,9 @@ namespace SudokuLogic
         public override string ToString()
         {
             var sb = new StringBuilder();
-            for (int c = 0; c < 9; c++)
+            for (int c = 0; c < Size; c++)
             {
-                for (int r = 0; r < 9; r++)
+                for (int r = 0; r < Size; r++)
                 {
                     sb.Append(Cells[c, r].ToString());
                 }
@@ -123,12 +124,12 @@ namespace SudokuLogic
         /// <param name="content"></param>
         public void FillFromString(string content)
         {
-            if (content.Length != 81) return;
+            if (content.Length != Size*Size) return;
             Clear();
             int characterCounter = 0;
-            for (int c = 0; c < 9; c++)
+            for (int c = 0; c < Size; c++)
             {
-                for (int r = 0; r < 9; r++)
+                for (int r = 0; r < Size; r++)
                 {
                     byte.TryParse(content[characterCounter++].ToString(), out Cells[c, r]);
                     if (Cells[c, r] > 0)
@@ -140,9 +141,9 @@ namespace SudokuLogic
 
         public void Clear()
         {
-            for (int c = 0; c < 9; c++)
+            for (int c = 0; c < Size; c++)
             {
-                for (int r = 0; r < 9; r++)
+                for (int r = 0; r < Size; r++)
                 {
                     Cells[c, r] = 0;
                     Origins[c, r] = Origin.Empty;

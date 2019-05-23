@@ -5,6 +5,7 @@ using System.Drawing;
 using System.IO;
 using System.Media;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SudokuSolver
@@ -52,14 +53,14 @@ namespace SudokuSolver
                 vm.Cells[vm.Selected.Column, vm.Selected.Row].BackColor = Color.Red;
                 vm.Cells[vm.Selected.Column, vm.Selected.Row].Refresh();
                 SystemSounds.Asterisk.Play();
-                Thread.Sleep(100);
+                Task.Delay(100);
                 vm.Cells[vm.Selected.Column, vm.Selected.Row].BackColor = Color.White;
                 vm.Cells[vm.Selected.Column, vm.Selected.Row].Refresh();
             }
         }
 
         private void SelectNext() =>
-            SelectCell((vm.Selected.Column + 1) % 9, vm.Selected.Column != 8 ? vm.Selected.Row : (vm.Selected.Row + 1) % 9);
+            SelectCell((vm.Selected.Column + 1) % Board.Size, vm.Selected.Column != Board.Size - 1 ? vm.Selected.Row : (vm.Selected.Row + 1) % Board.Size);
 
         private Color GetCellBgColor(int i, int j) =>
             (i / 3 + j / 3) % 2 == 0
@@ -68,9 +69,9 @@ namespace SudokuSolver
 
         private void CreateBoard()
         {
-            for (int col = 0; col < 9; col++)
+            for (int col = 0; col < Board.Size; col++)
             {
-                for (int row = 0; row < 9; row++)
+                for (int row = 0; row < Board.Size; row++)
                 {
                     var cellPnl = vm.Cells[col, row] = new Panel
                     {
@@ -176,9 +177,9 @@ namespace SudokuSolver
         private void RefreshBoard()
         {
             vm.BasicPossibilitiesReduction();
-            for (int col = 0; col < 9; col++)
+            for (int col = 0; col < Board.Size; col++)
             {
-                for (int row = 0; row < 9; row++)
+                for (int row = 0; row < Board.Size; row++)
                 {
                     RefreshCell(col, row);
                 }
@@ -261,17 +262,25 @@ namespace SudokuSolver
 
         private async void BruteForceBtn_Click(object sender, EventArgs e)
         {
-            vm.ColorChangeFreshToOld();
-            alert = new AlertForm();
-            alert.Show();
-            alert.Text = "Searching complete.";
-            alert.OK_Btn.Visible = true;
-            var stopwatch = new Stopwatch();
-            stopwatch.Start();
-            StatusLabel.Text = alert.labelMessage.Text = await vm.BruteForce()
-                ? $"Solution found using brute force method.\r\nTime elapsed : {stopwatch.ElapsedMilliseconds} ms."
-                : $"This sudoku has no solution.\r\nTime elapsed : {stopwatch.ElapsedMilliseconds} ms.";
-            RefreshBoard();
+            try
+            {
+                BruteForceBtn.Enabled = false;
+                vm.ColorChangeFreshToOld();
+                alert = new AlertForm();
+                alert.Show();
+                alert.OK_Btn.Visible = true;
+                var stopwatch = new Stopwatch();
+                stopwatch.Start();
+                StatusLabel.Text = alert.labelMessage.Text = await vm.BruteForce()
+                    ? $"Solution found using brute force method.\r\nTime elapsed : {stopwatch.ElapsedMilliseconds} ms."
+                    : $"This sudoku has no solution.\r\nTime elapsed : {stopwatch.ElapsedMilliseconds} ms.";
+                alert.Text = "Searching complete.";
+                RefreshBoard();
+            }
+            finally
+            {
+                BruteForceBtn.Enabled = true;
+            }
         }
 
         private void HintsChk_CheckedChanged(object sender, EventArgs e)
